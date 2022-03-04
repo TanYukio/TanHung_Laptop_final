@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#9E47BD">
+            <ImageView
+                android:layout_marginRight="10dp"
+                android:id="@+id/menu"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:src="@drawable/ic_baseline_menu_24"
+                app:tint="#000000">
+
+            </ImageView>
+
+            <ImageView
+                android:id="@+id/thongbao"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:src="@drawable/ic_baseline_notifications_active_24"
+                app:tint="#000000">
+
+            </ImageView>
+
+
+            <ImageView
+
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="left"
+                android:src="@drawable/logo_khongten"
+                app:tint="#000000">
+
+            </ImageView>
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left">
+                <EditText
+                    android:id="@+id/edt_timkiem"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Tìm kiếm sản phẩm"
+                    android:textSize="15sp"
+                    android:gravity="center"
+                    android:layout_gravity="right"/>
+                <ImageView
+                    android:id="@+id/img_search_home"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_search_24"
+                    app:tint="#000000">
+
+                </ImageView>
+            </FrameLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <include layout="@layout/content_main" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

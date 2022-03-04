@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/trangchu"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="Trang Chủ"/>
+    <item
+        android:id="@+id/apple"
+        android:icon="@drawable/ic_baseline_computer_24"
+        android:title="Apple"/>
+    <item
+        android:id="@+id/asus"
+        android:icon="@drawable/ic_baseline_computer_24"
+        android:title="ASUS"/>
+    <item
+        android:id="@+id/dell"
+        android:icon="@drawable/ic_baseline_computer_24"
+        android:title="Dell"/>
+     <item
+         android:id="@+id/hp"
+         android:icon="@drawable/ic_baseline_computer_24"
+        android:title="HP"/>
+    <item
+        android:id="@+id/acer"
+        android:icon="@drawable/ic_baseline_computer_24"
+        android:title="Acer"/>
+    <item
+        android:id="@+id/user"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="Thông tin người dùng"
+        />
+    <item
+        android:id="@+id/login"
+        android:icon="@drawable/ic_baseline_login_24"
+        android:title="Đăng nhập"/>
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/outline_logout_black_48"
+        android:title="Đăng xuất"/>
+
+</menu>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".TrangChuFragment">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/background_home"/>
+<!--    <ViewFlipper-->
+<!--        android:id="@+id/viewFlippermanhinhchinh"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="200dp">-->
+
+<!--    </ViewFlipper>-->
+    <TextView
+        android:layout_margin="20dp"
+        android:id="@+id/tieude_trangchu"
+        android:textSize="20sp"
+        android:text="Sản phẩm mới"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <GridView
+        android:id="@+id/gridviewSanPham"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="2" />
+
+</LinearLayout>
