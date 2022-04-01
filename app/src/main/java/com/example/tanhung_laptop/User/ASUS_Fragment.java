@@ -1,5 +1,6 @@
-package com.example.tanhung_laptop;
+package com.example.tanhung_laptop.User;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -8,18 +9,24 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.example.tanhung_laptop.Adapter.LAPTOP_ADAPTER;
 import com.example.tanhung_laptop.Models.LAPTOP;
+import com.example.tanhung_laptop.R;
 
 import java.util.ArrayList;
 
-public class Dell_Fragment extends Fragment {
+
+public class ASUS_Fragment extends Fragment {
+
     View view;
     GridView gridviewSanPham;
     ArrayList<LAPTOP> laptopArrayList;
     LAPTOP_ADAPTER adapter;
+    TextView tieude;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,19 +40,19 @@ public class Dell_Fragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_trang_chu, container, false);
         anh_xa();
         laptopArrayList = new ArrayList<>();
-        adapter = new LAPTOP_ADAPTER(Dell_Fragment.this, R.layout.laptop_layout, laptopArrayList);
+        adapter = new LAPTOP_ADAPTER(ASUS_Fragment.this, R.layout.laptop_layout, laptopArrayList);
         gridviewSanPham.setAdapter(adapter);
-//        gridviewSanPham.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Intent intent = new Intent(getActivity(), Products_information_activity.class);
-//
-//
-//                intent.putExtra("id",i);
-//                startActivity(intent);
-//
-//            }
-//        });
+        gridviewSanPham.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getActivity(), Chitietsanpham_Activity.class);
+
+
+                intent.putExtra("id",i);
+                startActivity(intent);
+
+            }
+        });
         registerForContextMenu(gridviewSanPham);
 
         GetData();
@@ -53,7 +60,7 @@ public class Dell_Fragment extends Fragment {
     }
 
     private void GetData() {
-        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE IDNSX = 3");
+        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE IDNSX = 2");
         laptopArrayList.clear();
         while (cursor.moveToNext())
         {
@@ -72,6 +79,8 @@ public class Dell_Fragment extends Fragment {
     }
 
     private void anh_xa() {
+        tieude = view.findViewById(R.id.tieude);
+        tieude.setText("Sản phẩm ASUS");
         gridviewSanPham = view.findViewById(R.id.gridviewSanPham);
     }
 }

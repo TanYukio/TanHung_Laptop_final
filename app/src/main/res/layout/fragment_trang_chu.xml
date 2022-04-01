@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".TrangChuFragment">
+    tools:context=".User.TrangChuFragment">
 
     <ImageView
         android:layout_width="match_parent"
@@ -19,10 +19,10 @@
 <!--    </ViewFlipper>-->
     <TextView
         android:layout_margin="20dp"
-        android:id="@+id/tieude_trangchu"
+        android:id="@+id/tieude"
         android:textSize="20sp"
         android:text="Sản phẩm mới"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

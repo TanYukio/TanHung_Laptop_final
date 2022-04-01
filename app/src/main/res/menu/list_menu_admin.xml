@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_HomeAdmin"
+        android:title="Sản Phẩm" />
+    <item
+        android:id="@+id/nav_ql_sanpham"
+        android:title="Sản Phẩm" />
+    <item
+
+        android:id="@+id/nav_ql_themsanpham"
+        android:title="Thêm sản phẩm" />
+    <item
+        android:id="@+id/nav_ql_taikhoan"
+        android:title="Tài Khoản" />
+    <item
+        android:icon="@drawable/ic_baseline_add_shopping_cart_24"
+        android:id="@+id/nav_ql_hoadon"
+        android:title="Doanh Thu" />
+    <item
+        android:id="@+id/nav_ql_soluongsanpham"
+        android:title="Sản phẩm" />
+    <item
+        android:id="@+id/nav_ql_gopy"
+        android:title="Quản Lý Góp Ý" />
+    <group android:checkableBehavior="single">
+        <item
+            android:icon="@drawable/ic_baseline_login_24"
+            android:id="@+id/nav_login"
+            android:title="Đăng Nhập" />
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:icon="@drawable/ic_baseline_login_24"
+            android:id="@+id/nav_logout"
+            android:title="Đăng Xuất" />
+    </group>
+</menu>

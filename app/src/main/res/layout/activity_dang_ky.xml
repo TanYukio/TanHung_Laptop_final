@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_login"
-    tools:context=".DangKy_Activity">
+    tools:context=".User.DangKy_Activity">
 
     <ImageView
         android:layout_margin="10dp"
-        android:id="@+id/img_quaylai"
+        android:id="@+id/img_quaylai_dangky"
         android:layout_width="50dp"
         android:layout_height="50dp"
 

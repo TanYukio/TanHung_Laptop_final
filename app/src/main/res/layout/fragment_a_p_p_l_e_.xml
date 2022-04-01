@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".APPLE_Fragment">
+    tools:context=".User.APPLE_Fragment">
 
     <ImageView
         android:layout_width="match_parent"

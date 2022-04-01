@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D248EA"
+    android:gravity="center"
+
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:text="THANH TOÁN"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:padding="20dp"
+        />
+    <EditText
+        android:id="@+id/diachi_thanhtoan"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:gravity="center"
+        android:hint="Nhập địa chỉ giao hàng"/>
+    <EditText
+        android:id="@+id/ghichu_thanhtoan"
+        android:layout_width="300dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:hint="Ghi chú"/>
+
+</LinearLayout>

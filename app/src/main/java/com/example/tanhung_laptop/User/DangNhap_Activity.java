@@ -1,11 +1,10 @@
-package com.example.tanhung_laptop;
+package com.example.tanhung_laptop.User;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,9 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tanhung_laptop.HomeAdmin_Activity;
 import com.example.tanhung_laptop.Models.TAIKHOAN;
-
-import java.util.List;
+import com.example.tanhung_laptop.R;
 
 public class DangNhap_Activity extends AppCompatActivity {
     TextView txtdangky;
@@ -24,7 +23,7 @@ public class DangNhap_Activity extends AppCompatActivity {
     CheckBox cb_luumatkhau_dangnhap;
     EditText edt_Matkhau_dangnhap,edt_Taikhoan_Dangnhap;
     ImageView img_back;
-
+    public static TAIKHOAN taikhoan = new TAIKHOAN() ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,18 +39,18 @@ public class DangNhap_Activity extends AppCompatActivity {
                         Toast.makeText(DangNhap_Activity.this, " Lỗi đăng nhập", Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        BatDau_activity.taikhoan = Laythongtintaikhoan();
+                        taikhoan = Laythongtintaikhoan();
 
-                        if (BatDau_activity.taikhoan.getQUYENTK()==1){
-                            Intent intent = new Intent(DangNhap_Activity.this,MainActivity.class);
-                            intent.putExtra("idtk",BatDau_activity.taikhoan.getIDTAIKHOAN());
+                        if (taikhoan.getQUYENTK()==1){
+                            Intent intent = new Intent(DangNhap_Activity.this, MainActivity.class);
+                            intent.putExtra("idtk",taikhoan.getIDTAIKHOAN());
                             startActivity(intent);
-                            Toast.makeText(DangNhap_Activity.this, "Ten nguoi dung: " + BatDau_activity.taikhoan.getTENTAIKHOAN(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DangNhap_Activity.this, "Ten nguoi dung: " + taikhoan.getTENTAIKHOAN(), Toast.LENGTH_SHORT).show();
 
                         }
                         else
                         {
-                            Toast.makeText(DangNhap_Activity.this, " Giao diện Admin", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(DangNhap_Activity.this, HomeAdmin_Activity.class));
                         }
 
                     }
@@ -102,7 +101,7 @@ public class DangNhap_Activity extends AppCompatActivity {
         img_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                startActivity(new Intent(DangNhap_Activity.this,MainActivity.class));
             }
         });
         edt_Taikhoan_Dangnhap = findViewById(R.id.edt_Taikhoan_Dangnhap);

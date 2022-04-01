@@ -1,4 +1,4 @@
-package com.example.tanhung_laptop;
+package com.example.tanhung_laptop.User;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,12 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.example.tanhung_laptop.Data.Database;
-import com.example.tanhung_laptop.Models.TAIKHOAN;
+import com.example.tanhung_laptop.R;
 
 public class BatDau_activity extends AppCompatActivity {
 
     public static Database database;
-    public static TAIKHOAN taikhoan = new TAIKHOAN() ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +20,8 @@ public class BatDau_activity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(BatDau_activity.this,MainActivity.class));
+                startActivity(new Intent(BatDau_activity.this, MainActivity.class));
+                finish();
             }
         },2000);
         database = new Database(this,"LAPTOPTANHUNG",null,1);

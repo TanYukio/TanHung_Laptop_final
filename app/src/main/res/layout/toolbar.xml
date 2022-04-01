@@ -22,7 +22,6 @@
                 android:layout_gravity="right"
                 android:src="@drawable/ic_baseline_menu_24"
                 app:tint="#000000">
-
             </ImageView>
 
             <ImageView
@@ -32,7 +31,6 @@
                 android:layout_gravity="right"
                 android:src="@drawable/ic_baseline_notifications_active_24"
                 app:tint="#000000">
-
             </ImageView>
 
 
