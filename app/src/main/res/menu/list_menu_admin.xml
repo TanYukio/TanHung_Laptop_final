@@ -3,24 +3,24 @@
 
     <item
         android:id="@+id/nav_HomeAdmin"
-        android:title="Sản Phẩm" />
+        android:title="Trang Chủ Admin" />
     <item
         android:id="@+id/nav_ql_sanpham"
-        android:title="Sản Phẩm" />
+        android:title="Quản Lý Sản Phẩm" />
     <item
 
         android:id="@+id/nav_ql_themsanpham"
         android:title="Thêm sản phẩm" />
     <item
         android:id="@+id/nav_ql_taikhoan"
-        android:title="Tài Khoản" />
+        android:title="Quản Lý Tài Khoản" />
     <item
         android:icon="@drawable/ic_baseline_add_shopping_cart_24"
         android:id="@+id/nav_ql_hoadon"
-        android:title="Doanh Thu" />
+        android:title="Thống Kê Doanh Thu" />
     <item
         android:id="@+id/nav_ql_soluongsanpham"
-        android:title="Sản phẩm" />
+        android:title="Thống Kê Sản phẩm" />
     <item
         android:id="@+id/nav_ql_gopy"
         android:title="Quản Lý Góp Ý" />

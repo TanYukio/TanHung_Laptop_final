@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
@@ -77,6 +78,24 @@ public class Database extends SQLiteOpenHelper {
         QueryData("INSERT INTO BINHLUAN (IDTK,IDSP,NOIDUNG,THOIGIAN) VALUES (" +IDTK + ",'" +
                 IDSP + "','" + NOIDUNG+"','" + THOIGIAN + "')");
     }
+    public void DELETE_SANPHAM(int IDLT){
+        SQLiteDatabase database = getWritableDatabase();
+        String sql = "DELETE  FROM LAPTOP WHERE IDLT = "+ IDLT  ;
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.clearBindings();
+
+
+        statement.executeInsert();
+    }
+    public void DELETE_TAIKHOAN(int IDTAIKHOAN){
+        SQLiteDatabase database = getWritableDatabase();
+        String sql = "DELETE  FROM TAIKHOAN WHERE IDTAIKHOAN = "+ IDTAIKHOAN  ;
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.clearBindings();
+
+
+        statement.executeInsert();
+    }
     public LAPTOP laptop(int IDLT){
         Cursor cursor = GetData("SELECT * FROM LAPTOP WHERE IDLT = " + IDLT );
         while (cursor.moveToNext()) {
@@ -93,6 +112,63 @@ public class Database extends SQLiteOpenHelper {
 
         }
         return null;
+    }
+    public void UPDATE_DOAN(String TENLAPTOP,byte[] hinh,int SOLUONG,int  GIASP,int IDNSX,int LTMOI, int IDLT ){
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("TENLAPTOP", TENLAPTOP);
+        values.put("GIASP", GIASP);
+        values.put("SOLUONG", SOLUONG);
+        values.put("IDNSX", IDNSX);
+        values.put("LTMOI", LTMOI);
+
+        sqLiteDatabase.update("LAPTOP",values,"IDLT =" + IDLT,null);
+
+
+        String sql = "UPDATE LAPTOP SET HINHANH = ? WHERE IDLT="+ IDLT ;
+        SQLiteDatabase database = this.getWritableDatabase();
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.clearBindings();
+
+        statement.bindBlob(1,hinh);
+        statement.executeInsert();
+    }
+    public void UPDATE_TAIKHOAN(int IDTAIKHOAN,String TENTAIKHOAN, String MATKHAU, int SDT,String EMAIL, String NGAYSINH,
+                                int QUYENTK, String DIACHI, byte[] HINH){
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("TENTAIKHOAN", TENTAIKHOAN);
+        values.put("MATKHAU", MATKHAU);
+        values.put("SDT", SDT);
+        values.put("EMAIL", EMAIL);
+        values.put("NGAYSINH", NGAYSINH);
+        values.put("QUYENTK", QUYENTK);
+        values.put("DIACHI", DIACHI);
+
+        sqLiteDatabase.update("TAIKHOAN",values,"IDTAIKHOAN =" + IDTAIKHOAN,null);
+
+
+        String sql = "UPDATE TAIKHOAN SET HINHANH = ? WHERE IDTAIKHOAN="+ IDTAIKHOAN ;
+        SQLiteDatabase database = this.getWritableDatabase();
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.clearBindings();
+
+        statement.bindBlob(1,HINH);
+        statement.executeInsert();
+    }
+    public void INSERT_DOAN(String TENLAPTOP,byte[] hinh,int SOLUONG,int  GIASP,int IDNSX,int LTMOI ) throws SQLiteException {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues cv = new  ContentValues();
+        cv.put("TENLAPTOP", TENLAPTOP);
+        cv.put("GIASP", GIASP);
+        cv.put("SOLUONG", SOLUONG);
+        cv.put("IDNSX", IDNSX);
+        cv.put("LTMOI", LTMOI);
+        cv.put("HINHANH", hinh);
+        database.insert( "LAPTOP", null, cv );
+
     }
     public void INSERT_GOPY(String tentaikhoan, int sdt, String noidung){
         SQLiteDatabase database = getWritableDatabase();

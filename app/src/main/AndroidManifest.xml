@@ -15,6 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TanHung_Laptop">
         <activity
+            android:name=".HoaDon_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".ThemSanPham_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".SuaTaiKhoan_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".SuaSanPham_Activity"
+            android:exported="false" />
+        <activity
             android:name=".HomeAdmin_Activity"
             android:exported="false" />
         <activity
