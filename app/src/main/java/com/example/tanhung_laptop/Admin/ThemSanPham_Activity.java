@@ -1,4 +1,4 @@
-package com.example.tanhung_laptop;
+package com.example.tanhung_laptop.Admin;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,34 +21,25 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.tanhung_laptop.Adapter.LAPTOP_ADAPTER;
-import com.example.tanhung_laptop.Adapter.LaptopAdminAdapter;
-import com.example.tanhung_laptop.Models.LAPTOP;
+import com.example.tanhung_laptop.R;
 import com.example.tanhung_laptop.User.BatDau_activity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public class SuaSanPham_Activity extends AppCompatActivity {
+public class ThemSanPham_Activity extends AppCompatActivity {
     Button btnAdd,btnCancel;
     EditText editTen, edtDanhMuc,edtSoLuong, edt_GiaSP,edtSPmoi;
     ImageButton ibtnCamera,ibtnFolder;
     ImageView imgHinh,quaylai_QLSP;
     final int REQUEST_CODE_CAMERA=123;
     final int REQUEST_CODE_FOLDER=456;
-    LAPTOP laptop;
-    int id,MASP;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sua_san_pham);
-        Intent intent = getIntent();
-        id = intent.getIntExtra("id",1123);
-
+        setContentView(R.layout.activity_them_san_pham);
         Anhxa();
-        Getdata();
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,19 +50,22 @@ public class SuaSanPham_Activity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.PNG,100,byteArray);
                 byte[] hinhAnh = byteArray.toByteArray();
 
-                BatDau_activity.database.UPDATE_DOAN(
+                BatDau_activity.database.INSERT_DOAN(
                         editTen.getText().toString().trim(),
                         hinhAnh,
                         Integer.parseInt(edtSoLuong.getText().toString().trim()),
                         Integer.parseInt(edt_GiaSP.getText().toString().trim()),
                         Integer.parseInt(edtDanhMuc.getText().toString().trim()),
                         Integer.parseInt(edtSPmoi.getText().toString().trim())
-                        ,MASP
-
                 );
 
-                Toast.makeText(SuaSanPham_Activity.this," Sửa thành công",Toast.LENGTH_LONG).show();
-                startActivity(new Intent(SuaSanPham_Activity.this, HomeAdmin_Activity.class));
+                Toast.makeText(ThemSanPham_Activity.this," Thêm sản phẩm thành công",Toast.LENGTH_LONG).show();
+                edt_GiaSP.setText("");
+                edtDanhMuc.setText("");
+                edtSoLuong.setText("");
+                edtSPmoi.setText("");
+                editTen.setText("");
+                imgHinh.setImageResource(R.drawable.photo);
 
             }
         });
@@ -80,7 +74,7 @@ public class SuaSanPham_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ActivityCompat.requestPermissions(
-                        SuaSanPham_Activity.this,
+                        ThemSanPham_Activity.this,
                         new String[]{Manifest.permission.CAMERA},
                         REQUEST_CODE_CAMERA
                 );
@@ -92,7 +86,7 @@ public class SuaSanPham_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ActivityCompat.requestPermissions(
-                        SuaSanPham_Activity.this,
+                        ThemSanPham_Activity.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         REQUEST_CODE_FOLDER
                 );
@@ -112,19 +106,6 @@ public class SuaSanPham_Activity extends AppCompatActivity {
         });
     }
 
-    private void Getdata() {
-        laptop = LaptopAdminAdapter.laptopList.get(id);
-        MASP = laptop.getIDLT();
-        editTen.setText(laptop.getTENLAPTOP());
-        edt_GiaSP.setText(String.valueOf(laptop.getGIA()));
-        edtDanhMuc.setText(String.valueOf(laptop.getIDNSX()));
-        edtSoLuong.setText(String.valueOf(laptop.getSOLUONG()));
-        edtSPmoi.setText(String.valueOf(laptop.getLTMOI()));
-        byte[] hinhAnh = laptop.getHINHANH();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(hinhAnh,0,hinhAnh.length);
-        imgHinh.setImageBitmap(bitmap);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
@@ -135,7 +116,7 @@ public class SuaSanPham_Activity extends AppCompatActivity {
                     startActivityForResult(intent,REQUEST_CODE_CAMERA);
                 }else
                 {
-                    Toast.makeText(SuaSanPham_Activity.this," Bạn không cho phép mở camera", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ThemSanPham_Activity.this," Bạn không cho phép mở camera", Toast.LENGTH_LONG).show();
                 }
                 break;
             case REQUEST_CODE_FOLDER:
@@ -146,7 +127,7 @@ public class SuaSanPham_Activity extends AppCompatActivity {
                     startActivityForResult(intent,REQUEST_CODE_FOLDER);
                 }else
                 {
-                    Toast.makeText(SuaSanPham_Activity.this," Bạn không cho phép mở Folder", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ThemSanPham_Activity.this," Bạn không cho phép mở folder", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -176,7 +157,6 @@ public class SuaSanPham_Activity extends AppCompatActivity {
     }
 
     private void Anhxa() {
-        quaylai_QLSP = findViewById(R.id.quaylai_QLSP);
         btnAdd = (Button) findViewById(R.id.buttonAdd);
         btnCancel = (Button) findViewById(R.id.buttonHuy_QlSP);
         editTen =  (EditText) findViewById(R.id.edt_TenSP_QLSP);
@@ -184,6 +164,7 @@ public class SuaSanPham_Activity extends AppCompatActivity {
         edtSoLuong = (EditText) findViewById(R.id.edt_SLSP_QLSP);
         edt_GiaSP = (EditText) findViewById(R.id.edt_GiaSP_QLSP);
         edtSPmoi = (EditText) findViewById(R.id.edt_SPmoi_QLSP);
+        quaylai_QLSP = findViewById(R.id.quaylai_QLSP);
         ibtnCamera = (ImageButton) findViewById(R.id.imageButtonCamera);
         ibtnFolder = (ImageButton) findViewById(R.id.imageButtonFolder);
         imgHinh = (ImageView) findViewById(R.id.imageViewHinh_QLSP);

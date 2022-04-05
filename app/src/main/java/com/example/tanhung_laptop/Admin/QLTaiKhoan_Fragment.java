@@ -1,4 +1,4 @@
-package com.example.tanhung_laptop;
+package com.example.tanhung_laptop.Admin;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.tanhung_laptop.Adapter.TaiKhoanAdminAdapter;
 import com.example.tanhung_laptop.Models.TAIKHOAN;
+import com.example.tanhung_laptop.R;
 import com.example.tanhung_laptop.User.BatDau_activity;
 
 import java.util.ArrayList;

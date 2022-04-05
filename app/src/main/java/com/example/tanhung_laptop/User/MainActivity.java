@@ -14,11 +14,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.tanhung_laptop.Adapter.TimKiemAdapter;
 import com.example.tanhung_laptop.Models.TAIKHOAN;
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.TimKiem;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationeview_home;
     ImageView menu;
     Toolbar toolbar;
+    EditText edt_timkiem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,30 +77,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationeview_home=findViewById(R.id.navigationeview_home);
         menu=findViewById(R.id.menu);
         toolbar = findViewById(R.id.toolbar);
-
-
-
-
-
-
-
+        edt_timkiem = findViewById(R.id.edt_timkiem);
+        edt_timkiem.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                startActivity(new Intent(MainActivity.this, TimKiem.class));
+            }
+        });
         navigationeview_home.setNavigationItemSelectedListener(this);
         navigationeview_home.setCheckedItem(R.id.trangchu);
         // Drawer
 
         replaceFragment(new TrangChuFragment());
     }
-
-
-
-//    @Override
-//    public void onBackPressed() {
-//        if (drawerlaout.isDrawerOpen(GravityCompat.END)) {
-//            drawerlaout.closeDrawer(GravityCompat.END);
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
 
 
     private void ActionBar(){
@@ -111,9 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 else drawerlaout.openDrawer(GravityCompat.END);
             }
         });
-
     }
-
     @Override
     protected void onStart() {
         Menu menu = navigationeview_home.getMenu();
@@ -124,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         super.onStart();
     }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();

@@ -1,4 +1,4 @@
-package com.example.tanhung_laptop;
+package com.example.tanhung_laptop.Admin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,13 +14,16 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.tanhung_laptop.Models.TAIKHOAN;
+import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.TimKiem;
 import com.example.tanhung_laptop.User.BatDau_activity;
 import com.example.tanhung_laptop.User.DangNhap_Activity;
-import com.example.tanhung_laptop.User.GopY_Fragment;
+import com.example.tanhung_laptop.User.MainActivity;
 import com.google.android.material.navigation.NavigationView;
 
 public class HomeAdmin_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +32,7 @@ public class HomeAdmin_Activity extends AppCompatActivity implements NavigationV
     NavigationView navigationeview_home;
     ImageView menu;
     Toolbar toolbar;
+    EditText edt_timkiem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +73,8 @@ public class HomeAdmin_Activity extends AppCompatActivity implements NavigationV
         navigationeview_home=findViewById(R.id.navigationeview_home);
         menu=findViewById(R.id.menu);
         toolbar = findViewById(R.id.toolbar);
+        edt_timkiem = findViewById(R.id.edt_timkiem);
+        edt_timkiem.setEnabled(false);
 
 
 
@@ -82,17 +88,6 @@ public class HomeAdmin_Activity extends AppCompatActivity implements NavigationV
 
         replaceFragment(new HomeAdmin_Fragment());
     }
-
-
-
-//    @Override
-//    public void onBackPressed() {
-//        if (drawerlaout.isDrawerOpen(GravityCompat.END)) {
-//            drawerlaout.closeDrawer(GravityCompat.END);
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
 
 
     private void ActionBar(){
@@ -127,29 +122,35 @@ public class HomeAdmin_Activity extends AppCompatActivity implements NavigationV
         if(id == R.id.nav_ql_sanpham){
             replaceFragment(new QLSanPham_Fragment());
 
+
         }else if(id == R.id.nav_ql_taikhoan){
             replaceFragment(new QLTaiKhoan_Fragment());
+
         }
         else if(id == R.id.nav_ql_themsanpham){
             startActivity(new Intent(HomeAdmin_Activity.this,ThemSanPham_Activity.class));
+            finish();
 
         }
         else if(id == R.id.nav_ql_hoadon){
            startActivity(new Intent(HomeAdmin_Activity.this,HoaDon_Activity.class));
+            finish();
 
         }
         else if(id == R.id.nav_ql_gopy){
-            Toast.makeText(this, "Chưa có", Toast.LENGTH_SHORT).show();
+            replaceFragment(new QLGopY_Fragment());
+
         }
         else if(id == R.id.nav_ql_soluongsanpham){
             replaceFragment(new ThongKe_Fragment());
+
         }
-        else if(id == R.id.login){
+        else if(id == R.id.nav_login){
             startActivity(new Intent(HomeAdmin_Activity.this, DangNhap_Activity.class));
             finish();
 
         }
-        else if(id == R.id.logout){
+        else if(id == R.id.nav_logout){
             startActivity(new Intent(this,DangNhap_Activity.class));
             finish();
 

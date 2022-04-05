@@ -1,4 +1,4 @@
-package com.example.tanhung_laptop;
+package com.example.tanhung_laptop.Admin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +18,7 @@ import com.example.tanhung_laptop.Adapter.CategoryAdapter;
 import com.example.tanhung_laptop.Adapter.HoaDonAdapter;
 import com.example.tanhung_laptop.Models.Category;
 import com.example.tanhung_laptop.Models.HoaDon;
+import com.example.tanhung_laptop.R;
 import com.example.tanhung_laptop.User.BatDau_activity;
 import com.example.tanhung_laptop.User.ChiTietDonHang_Activity;
 

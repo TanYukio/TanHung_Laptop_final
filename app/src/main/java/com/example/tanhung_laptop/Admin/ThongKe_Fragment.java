@@ -1,4 +1,4 @@
-package com.example.tanhung_laptop;
+package com.example.tanhung_laptop.Admin;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,66 +15,39 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tanhung_laptop.Adapter.CategoryAdapter;
 import com.example.tanhung_laptop.Adapter.LaptopAdminAdapter;
-import com.example.tanhung_laptop.Models.Category;
 import com.example.tanhung_laptop.Models.LAPTOP;
+import com.example.tanhung_laptop.R;
 import com.example.tanhung_laptop.User.BatDau_activity;
 
 import java.util.ArrayList;
 
-public class QLSanPham_Fragment extends Fragment {
 
+public class ThongKe_Fragment extends Fragment {
     View view;
-    ArrayList<Category> listCategory;
-    Spinner spnTheloai;
     GridView gridView_SanPham;
+    TextView soluongtonkho;
     ArrayList<LAPTOP> laptopArrayList;
     LaptopAdminAdapter adapter;
-    CategoryAdapter categoryAdapter;
-    int IDNSX;
-    String sql;
-    public QLSanPham_Fragment() {
+    public ThongKe_Fragment() {
 
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        view= inflater.inflate(R.layout.fragment_q_l_san_pham_, container, false);
+        view = inflater.inflate(R.layout.fragment_doanh_thu_, container, false);
+        soluongtonkho = view.findViewById(R.id.soluongtonkho);
         gridView_SanPham = (GridView) view.findViewById(R.id.gridviewQLSanPham);
-        Anhxa();
-        listCategory = getListCategory();
-        categoryAdapter = new CategoryAdapter(getActivity(), R.layout.item_select, listCategory);
-        spnTheloai.setAdapter(categoryAdapter);
-        IDNSX = 0;
-        spnTheloai.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                IDNSX = categoryAdapter.getItem(position).getIDcategory();
-                GetData();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-
         laptopArrayList = new ArrayList<>();
-        adapter = new LaptopAdminAdapter(QLSanPham_Fragment.this, R.layout.product_sanpham_admin, laptopArrayList);
+        adapter = new LaptopAdminAdapter(ThongKe_Fragment.this, R.layout.product_sanpham_admin, laptopArrayList);
         gridView_SanPham.setAdapter(adapter);
         gridView_SanPham.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -93,26 +66,18 @@ public class QLSanPham_Fragment extends Fragment {
         GetData();
         return view;
     }
-
-    private void Anhxa() {
-        spnTheloai = view.findViewById(R.id.spnAddTheloai);
-    }
-
     @Override
     public void onStart() {
         GetData();
         super.onStart();
     }
     private void GetData() {
-        if(IDNSX ==0)
-        {
-            sql="SELECT * FROM LAPTOP";
-        }
-        else {
-            sql =" SELECT * FROM LAPTOP WHERE IDNSX = " + IDNSX;
-        }
+        Cursor cursor1 = BatDau_activity.database.GetData("SELECT SUM ( SOLUONG ) FROM LAPTOP ");
+        cursor1.moveToNext();
+        soluongtonkho.setText(String.valueOf(cursor1.getInt(0) + " Sản phẩm "));
 
-        Cursor cursor = BatDau_activity.database.GetData(sql);
+
+        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE SOLUONG < 50 ");
         laptopArrayList.clear();
         while (cursor.moveToNext())
         {
@@ -154,16 +119,5 @@ public class QLSanPham_Fragment extends Fragment {
             default:
                 return super.onContextItemSelected(item);
         }
-    }
-    private ArrayList<Category> getListCategory() {
-        ArrayList<Category> list = new ArrayList<>();
-
-        list.add(new Category("Apple",1));
-        list.add(new Category("ASUS",2));
-        list.add(new Category("Dell",3));
-        list.add(new Category("HP", 4));
-        list.add(new Category("Acer", 5));
-
-        return list;
     }
 }

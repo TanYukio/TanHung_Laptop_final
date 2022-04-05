@@ -15,19 +15,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TanHung_Laptop">
         <activity
-            android:name=".HoaDon_Activity"
+            android:name=".TimKiem"
             android:exported="false" />
         <activity
-            android:name=".ThemSanPham_Activity"
+            android:name=".Admin.HoaDon_Activity"
             android:exported="false" />
         <activity
-            android:name=".SuaTaiKhoan_Activity"
+            android:name=".Admin.ThemSanPham_Activity"
             android:exported="false" />
         <activity
-            android:name=".SuaSanPham_Activity"
+            android:name=".Admin.SuaTaiKhoan_Activity"
             android:exported="false" />
         <activity
-            android:name=".HomeAdmin_Activity"
+            android:name=".Admin.SuaSanPham_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".Admin.HomeAdmin_Activity"
             android:exported="false" />
         <activity
             android:name=".User.ChiTietDonHang_Activity"

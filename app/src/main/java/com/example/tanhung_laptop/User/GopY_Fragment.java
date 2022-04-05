@@ -41,12 +41,18 @@ public class GopY_Fragment extends Fragment {
     }
 
     private void Anhxa() {
-        edt_Tentaikhoan.setText(DangNhap_Activity.taikhoan.getTENTAIKHOAN());
-        edt_Sdt.setText(String.valueOf(DangNhap_Activity.taikhoan.getSDT()));
+
         edt_Tentaikhoan = view.findViewById(R.id.edtTaikhoangopy);
         edt_Sdt = view.findViewById(R.id.edtSdtgopy);
         edt_NoiDunggopy = view.findViewById(R.id.edtNoidunggopy);
         btn_Gopy = view.findViewById(R.id.btnGopy);
+        if(DangNhap_Activity.taikhoan.getIDTAIKHOAN()==-1){
+            edt_Tentaikhoan.setText("Khách");
+        }else {
+            edt_Tentaikhoan.setText(DangNhap_Activity.taikhoan.getTENTAIKHOAN());
+        }
+
+        edt_Sdt.setText(String.valueOf(DangNhap_Activity.taikhoan.getSDT()));
         btn_Gopy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +67,6 @@ public class GopY_Fragment extends Fragment {
                             edt_NoiDunggopy.getText().toString().trim()
                     );
                     Toast.makeText(getActivity(), "Gửi góp ý thành công !", Toast.LENGTH_LONG).show();
-                    edt_NoiDunggopy.setText("");
                     edt_NoiDunggopy.setText("");
                 }
             }

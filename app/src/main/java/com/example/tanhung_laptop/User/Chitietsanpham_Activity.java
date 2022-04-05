@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.tanhung_laptop.Adapter.BinhLuanAdapter;
 import com.example.tanhung_laptop.Adapter.LAPTOP_ADAPTER;
+import com.example.tanhung_laptop.Adapter.TimKiemAdapter;
 import com.example.tanhung_laptop.Models.BinhLuan;
 import com.example.tanhung_laptop.Models.LAPTOP;
 import com.example.tanhung_laptop.R;
@@ -35,8 +36,8 @@ import java.util.Locale;
 public class Chitietsanpham_Activity extends AppCompatActivity {
 
     LAPTOP laptop;
-    TextView name,price,content,noidung_ctsp;
-    ImageView imgHinh,img_hethang;
+    TextView name,price,noidung_ctsp;
+    ImageView imgHinh;
     EditText editTextSL;
     Button btnaddcart,btn_GuiBl;
     ImageButton btn_quaylai;
@@ -53,6 +54,7 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_chitietsanpham);
         Intent intent = getIntent();
         id = intent.getIntExtra("id",1);
+        idtk = intent.getIntExtra("idtk",2);
         Anhxa();
         Sukien();
         GetDataSP();
@@ -74,8 +76,12 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
 
 
                 int SL = Integer.parseInt(editTextSL.getText().toString());
-
-                laptop = LAPTOP_ADAPTER.laptopList.get(id);
+                if(idtk==2){
+                    laptop = LAPTOP_ADAPTER.laptopList.get(id);
+                }else
+                {
+                    laptop = TimKiemAdapter.laptopList.get(idtk);
+                }
 
 
                 if(DangNhap_Activity.taikhoan.getIDTAIKHOAN() == -1)
@@ -126,12 +132,12 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
                     if (edt_noidungbl_sanpham.getText().length() > 0); {
                         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy", Locale.getDefault());
                         String currentDateandTime = sdf.format(new Date());
-//                        if(idtk==2){
-//                            sanPham = SanPhamAdapter.sanPhamList.get(id);
-//                        }else
-//                        {
-//                            sanPham = TimKiemAdapter.sanPhamList.get(idtk);
-//                        }
+                        if(idtk==2){
+                            laptop = LAPTOP_ADAPTER.laptopList.get(id);
+                        }else
+                        {
+                            laptop = TimKiemAdapter.laptopList.get(idtk);
+                        }
                         laptop = LAPTOP_ADAPTER.laptopList.get(id);
                         BatDau_activity.database.ThemBL(DangNhap_Activity.taikhoan.getIDTAIKHOAN(), laptop.getIDLT(),edt_noidungbl_sanpham.getText().toString(),currentDateandTime);
                         listBL.add(0, new BinhLuan(
@@ -164,8 +170,13 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
     }
 
     private void GetDataSP() {
+        if(idtk==2){
+            laptop = LAPTOP_ADAPTER.laptopList.get(id);
+        }else
+        {
+            laptop = TimKiemAdapter.laptopList.get(idtk);
+        }
         //get data
-        laptop = LAPTOP_ADAPTER.laptopList.get(id);
         String ten = laptop.getTENLAPTOP();
 //        String mota = sanPham.getMotaSP();
         name.setText(ten);
@@ -181,13 +192,12 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
     @Override
     protected void onStart() {
 
-        //        if(idtk==2){
-//            laptop = LAPTOP_ADAPTER.laptopList.get(id);
-//        }else
-//        {
-//            laptop = LAPTOP_ADAPTER.laptopList.get(idtk);
-//        }
-        laptop = LAPTOP_ADAPTER.laptopList.get(id);
+                if(idtk==2){
+            laptop = LAPTOP_ADAPTER.laptopList.get(id);
+        }else
+        {
+            laptop = TimKiemAdapter.laptopList.get(idtk);
+        }
         listBL = BatDau_activity.database.LayBinhLuan(laptop.getIDLT());
 
         binhLuanAdapter = new BinhLuanAdapter(listBL);

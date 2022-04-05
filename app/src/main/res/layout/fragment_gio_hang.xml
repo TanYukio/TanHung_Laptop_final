@@ -7,7 +7,7 @@
     <LinearLayout
         android:background="#FAFEFF"
         android:layout_width="match_parent"
-        android:layout_height="790dp"
+        android:layout_height="690dp"
         android:orientation="vertical">
         <ListView
             android:layout_marginTop="70dp"
@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <LinearLayout
-        android:layout_marginTop="810dp"
+        android:layout_marginTop="710dp"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         <TextView
             android:id="@+id/tongthanhtien"
             android:layout_width="wrap_content"
-            android:textSize="12sp"
+            android:textSize="15sp"
             android:gravity="center"
             android:layout_height="50dp"
             android:layout_marginLeft="40dp"
