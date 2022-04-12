@@ -74,7 +74,7 @@ public class HomeAdmin_Activity extends AppCompatActivity implements NavigationV
         menu=findViewById(R.id.menu);
         toolbar = findViewById(R.id.toolbar);
         edt_timkiem = findViewById(R.id.edt_timkiem);
-        edt_timkiem.setEnabled(false);
+        edt_timkiem.setEnabled(true);
 
 
 
