@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TanHung_Laptop">
         <activity
+            android:name=".NayMoiThem"
+            android:exported="false" />
+        <activity
             android:name=".TimKiem"
             android:exported="false" />
         <activity
