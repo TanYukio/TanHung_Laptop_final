@@ -6,18 +6,28 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tanhung_laptop.Adapter.LAPTOP_ADAPTER;
 import com.example.tanhung_laptop.Models.LAPTOP;
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.Retrofit.API;
+import com.example.tanhung_laptop.Retrofit.RetrofitClient;
+import com.example.tanhung_laptop.Retrofit.Utils;
 
 import java.util.ArrayList;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class ACER_Fragment extends Fragment {
@@ -27,6 +37,8 @@ public class ACER_Fragment extends Fragment {
     ArrayList<LAPTOP> laptopArrayList;
     LAPTOP_ADAPTER adapter;
     TextView tieude;
+    CompositeDisposable compositeDisposable;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,22 +72,28 @@ public class ACER_Fragment extends Fragment {
     }
 
     private void GetData() {
-        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE IDNSX = 5");
-        laptopArrayList.clear();
-        while (cursor.moveToNext())
-        {
-            laptopArrayList.add(new LAPTOP(
-                    cursor.getInt(0),
-                    cursor.getBlob(1),
-                    cursor.getString(2),
-                    cursor.getInt(3),
-                    cursor.getInt(4),
-                    cursor.getString(5),
-                    cursor.getInt(6),
-                    cursor.getInt(7)
-            ));
-        }
-        adapter.notifyDataSetChanged();
+        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+        compositeDisposable.add(api.laySpnsx(5)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        laptopModel -> {
+                            laptopArrayList.clear();
+                            if (laptopModel.isSuccess()) {
+
+
+                                for (int i= 0;i<laptopModel.getResult().size();i++){
+                                    laptopArrayList.add(laptopModel.getResult().get(i));
+                                }
+                                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
+
+                            }
+                            adapter.notifyDataSetChanged();
+                        }, throwable -> {
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
+
     }
 
     private void anh_xa() {

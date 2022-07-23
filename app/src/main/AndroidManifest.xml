@@ -13,9 +13,10 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/logo_khongten"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TanHung_Laptop">
+        android:theme="@style/Theme.TanHung_Laptop"
+        android:usesCleartextTraffic="true">
         <activity
-            android:name=".NayMoiThem"
+            android:name=".testActivity"
             android:exported="false" />
         <activity
             android:name=".TimKiem"

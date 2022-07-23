@@ -9,9 +9,9 @@ public class TAIKHOAN {
     String NGAYSINH;
     int QUYENTK;
     String DIACHI;
-    byte[] HINHANH;
+    String HINHANH;
 
-    public TAIKHOAN(int IDTAIKHOAN, String TENTAIKHOAN, String MATKHAU, int SDT, String EMAIL, String NGAYSINH, int QUYENTK, String DIACHI, byte[] HINHANH) {
+    public TAIKHOAN(int IDTAIKHOAN, String TENTAIKHOAN, String MATKHAU, int SDT, String EMAIL, String NGAYSINH, int QUYENTK, String DIACHI, String HINHANH) {
         this.IDTAIKHOAN = IDTAIKHOAN;
         this.TENTAIKHOAN = TENTAIKHOAN;
         this.MATKHAU = MATKHAU;
@@ -22,16 +22,25 @@ public class TAIKHOAN {
         this.DIACHI = DIACHI;
         this.HINHANH = HINHANH;
     }
-    public TAIKHOAN() {
-        IDTAIKHOAN = -1;
+
+    public TAIKHOAN( String TENTAIKHOAN, int IDTAIKHOAN) {
+        this.TENTAIKHOAN = TENTAIKHOAN;
+        this.IDTAIKHOAN = IDTAIKHOAN;
+
     }
-    public byte[] getHINHANH() {
+
+    public String getHINHANH() {
         return HINHANH;
     }
 
-    public void setHINHANH(byte[] HINHANH) {
+    public void setHINHANH(String HINHANH) {
         this.HINHANH = HINHANH;
     }
+
+    public TAIKHOAN() {
+        IDTAIKHOAN = -1;
+    }
+
 
     public int getIDTAIKHOAN() {
         return IDTAIKHOAN;

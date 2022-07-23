@@ -1,49 +1,40 @@
 package com.example.tanhung_laptop.Models;
 
 public class CTHoaDon {
-    int IDCTHOADON, IDSANPHAM,IDTAIKHOAN;
-    String TENSANPHAM;
-    int SOLUONG,THANHTIEN;
+    int IDHOADON, IDLT;
+    String TENLAPTOP;
+    int SOLUONG, THANHTIEN;
 
-    public CTHoaDon(int IDCTHOADON, int IDSANPHAM, int IDTAIKHOAN, String TENSANPHAM, int SOLUONG, int THANHTIEN) {
-        this.IDCTHOADON = IDCTHOADON;
-        this.IDSANPHAM = IDSANPHAM;
-        this.IDTAIKHOAN = IDTAIKHOAN;
-        this.TENSANPHAM = TENSANPHAM;
+    public CTHoaDon(int IDHOADON, int IDLT, String TENLAPTOP, int SOLUONG, int THANHTIEN) {
+        this.IDHOADON = IDHOADON;
+        this.IDLT = IDLT;
+        this.TENLAPTOP = TENLAPTOP;
         this.SOLUONG = SOLUONG;
         this.THANHTIEN = THANHTIEN;
     }
 
-    public int getIDCTHOADON() {
-        return IDCTHOADON;
+    public int getIDHOADON() {
+        return IDHOADON;
     }
 
-    public void setIDCTHOADON(int IDCTHOADON) {
-        this.IDCTHOADON = IDCTHOADON;
+    public void setIDHOADON(int IDHOADON) {
+        this.IDHOADON = IDHOADON;
     }
 
-    public int getIDSANPHAM() {
-        return IDSANPHAM;
+    public int getIDLT() {
+        return IDLT;
     }
 
-    public void setIDSANPHAM(int IDSANPHAM) {
-        this.IDSANPHAM = IDSANPHAM;
+    public void setIDLT(int IDLT) {
+        this.IDLT = IDLT;
     }
 
-    public int getIDTAIKHOAN() {
-        return IDTAIKHOAN;
+    public String getTENLAPTOP() {
+        return TENLAPTOP;
     }
 
-    public void setIDTAIKHOAN(int IDTAIKHOAN) {
-        this.IDTAIKHOAN = IDTAIKHOAN;
-    }
-
-    public String getTENSANPHAM() {
-        return TENSANPHAM;
-    }
-
-    public void setTENSANPHAM(String TENSANPHAM) {
-        this.TENSANPHAM = TENSANPHAM;
+    public void setTENLAPTOP(String TENLAPTOP) {
+        this.TENLAPTOP = TENLAPTOP;
     }
 
     public int getSOLUONG() {

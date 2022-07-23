@@ -4,10 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".User.GioHangFragment">
+
     <LinearLayout
         android:background="#FAFEFF"
         android:layout_width="match_parent"
-        android:layout_height="690dp"
+        android:layout_height="640dp"
         android:orientation="vertical">
         <ListView
             android:layout_marginTop="70dp"
@@ -16,7 +17,7 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <LinearLayout
-        android:layout_marginTop="710dp"
+        android:layout_marginTop="650dp"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +37,7 @@
             android:textSize="15sp"
             android:gravity="center"
             android:layout_height="50dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="10dp"
             android:text="0000000 VND"
             android:textColor="@color/black"/>
         <LinearLayout
@@ -47,13 +48,13 @@
                 android:id="@+id/thanhtoan_giohang"
                 android:layout_gravity="right"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:text="Thanh Toán"
+                android:textSize="12sp"
                 android:layout_marginRight="10dp"
                 />
         </LinearLayout>
     </LinearLayout>
-
     <TextView
         android:id="@+id/thongbaogiohang"
         android:layout_gravity="center"
@@ -64,5 +65,6 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text=""></TextView>
+
 
 </FrameLayout>

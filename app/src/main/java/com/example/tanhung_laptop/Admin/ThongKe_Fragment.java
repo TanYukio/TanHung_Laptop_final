@@ -21,9 +21,16 @@ import android.widget.Toast;
 import com.example.tanhung_laptop.Adapter.LaptopAdminAdapter;
 import com.example.tanhung_laptop.Models.LAPTOP;
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.Retrofit.API;
+import com.example.tanhung_laptop.Retrofit.RetrofitClient;
+import com.example.tanhung_laptop.Retrofit.Utils;
 import com.example.tanhung_laptop.User.BatDau_activity;
 
 import java.util.ArrayList;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class ThongKe_Fragment extends Fragment {
@@ -32,9 +39,13 @@ public class ThongKe_Fragment extends Fragment {
     TextView soluongtonkho;
     ArrayList<LAPTOP> laptopArrayList;
     LaptopAdminAdapter adapter;
+    API api;
+    CompositeDisposable compositeDisposable;
+
     public ThongKe_Fragment() {
 
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +55,9 @@ public class ThongKe_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_doanh_thu_, container, false);
+        compositeDisposable = new CompositeDisposable();
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+
         soluongtonkho = view.findViewById(R.id.soluongtonkho);
         gridView_SanPham = (GridView) view.findViewById(R.id.gridviewQLSanPham);
         laptopArrayList = new ArrayList<>();
@@ -55,7 +69,7 @@ public class ThongKe_Fragment extends Fragment {
                 Intent intent = new Intent(getActivity(), SuaSanPham_Activity.class);
 
 
-                intent.putExtra("id",i);
+                intent.putExtra("id", i);
 
                 startActivity(intent);
 
@@ -66,34 +80,67 @@ public class ThongKe_Fragment extends Fragment {
         GetData();
         return view;
     }
+
     @Override
     public void onStart() {
         GetData();
         super.onStart();
     }
+
     private void GetData() {
-        Cursor cursor1 = BatDau_activity.database.GetData("SELECT SUM ( SOLUONG ) FROM LAPTOP ");
-        cursor1.moveToNext();
-        soluongtonkho.setText(String.valueOf(cursor1.getInt(0) + " Sản phẩm "));
+//        Cursor cursor1 = BatDau_activity.database.GetData("SELECT SUM ( SOLUONG ) FROM LAPTOP ");
+//        cursor1.moveToNext();
+//        soluongtonkho.setText(String.valueOf(cursor1.getInt(0) + " Sản phẩm "));
+
+        compositeDisposable.add(api.laysllt()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        integerModel -> {
+                            if (integerModel.isSuccess()) {
+                                soluongtonkho.setText(String.valueOf(integerModel.getResult() + " Sản phẩm "));
+                            }
+                        }, throwable -> {
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
+
+        compositeDisposable.add(api.layltduoi50()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        laptopModel -> {
+                            laptopArrayList.clear();
+                            if (laptopModel.isSuccess()) {
 
 
-        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE SOLUONG < 50 ");
-        laptopArrayList.clear();
-        while (cursor.moveToNext())
-        {
-            laptopArrayList.add(new LAPTOP(
-                    cursor.getInt(0),
-                    cursor.getBlob(1),
-                    cursor.getString(2),
-                    cursor.getInt(3),
-                    cursor.getInt(4),
-                    cursor.getString(5),
-                    cursor.getInt(6),
-                    cursor.getInt(7)
-            ));
-        }
-        adapter.notifyDataSetChanged();
+                                for (int i= 0;i<laptopModel.getResult().size();i++){
+                                    laptopArrayList.add(laptopModel.getResult().get(i));
+                                }
+                                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
+                            }
+                            adapter.notifyDataSetChanged();
+                        }, throwable -> {
+
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
+
+//        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE SOLUONG < 50 ");
+//        laptopArrayList.clear();
+//        while (cursor.moveToNext()) {
+//            laptopArrayList.add(new LAPTOP(
+//                    cursor.getInt(0),
+//                    cursor.getBlob(1),
+//                    cursor.getString(2),
+//                    cursor.getInt(3),
+//                    cursor.getInt(4),
+//                    cursor.getString(5),
+//                    cursor.getInt(6),
+//                    cursor.getInt(7)
+//            ));
+//        }
+//        adapter.notifyDataSetChanged();
     }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         MenuInflater inflater = getActivity().getMenuInflater();
@@ -105,19 +152,24 @@ public class ThongKe_Fragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.menu_delete_item:
                 LAPTOP laptop = LaptopAdminAdapter.laptopList.get(info.position);
-                BatDau_activity.database.DELETE_SANPHAM(
-                        laptop.getIDLT()
-                );
+//                BatDau_activity.database.DELETE_SANPHAM(
+//                        laptop.getIDLT()
+//                );
 
-                Toast.makeText(getActivity(),"Xóa thành công",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Xóa thành công", Toast.LENGTH_LONG).show();
                 GetData();
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        compositeDisposable.clear();
+        super.onDestroy();
     }
 }

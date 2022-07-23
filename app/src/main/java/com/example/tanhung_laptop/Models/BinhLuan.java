@@ -1,50 +1,47 @@
 package com.example.tanhung_laptop.Models;
 
 public class BinhLuan {
-    Integer TaiKhoanBL;
-    byte[] HinhBL;
-    String NoidungBL;
-    String ThoiGianBL;
+    Integer IDTAIKHOAN;
+    String HINHANH;
+    String THOIGIAN;
+    String NOIDUNG;
 
-    public BinhLuan() {
+    public BinhLuan(Integer IDTAIKHOAN, String HINHANH, String THOIGIAN, String NOIDUNG) {
+        this.IDTAIKHOAN = IDTAIKHOAN;
+        this.HINHANH = HINHANH;
+        this.THOIGIAN = THOIGIAN;
+        this.NOIDUNG = NOIDUNG;
     }
 
-    public BinhLuan(Integer taiKhoanBL, byte[] hinhBL, String noidungBL, String thoiGianBL) {
-        TaiKhoanBL = taiKhoanBL;
-        HinhBL = hinhBL;
-        NoidungBL = noidungBL;
-        ThoiGianBL = thoiGianBL;
+    public Integer getIDTAIKHOAN() {
+        return IDTAIKHOAN;
     }
 
-    public Integer getTaiKhoanBL() {
-        return TaiKhoanBL;
+    public void setIDTAIKHOAN(Integer IDTAIKHOAN) {
+        this.IDTAIKHOAN = IDTAIKHOAN;
     }
 
-    public void setTaiKhoanBL(Integer taiKhoanBL) {
-        TaiKhoanBL = taiKhoanBL;
+    public String getHINHANH() {
+        return HINHANH;
     }
 
-    public byte[] getHinhBL() {
-        return HinhBL;
+    public void setHINHANH(String HINHANH) {
+        this.HINHANH = HINHANH;
     }
 
-    public void setHinhBL(byte[] hinhBL) {
-        HinhBL = hinhBL;
+    public String getTHOIGIAN() {
+        return THOIGIAN;
     }
 
-    public String getNoidungBL() {
-        return NoidungBL;
+    public void setTHOIGIAN(String THOIGIAN) {
+        this.THOIGIAN = THOIGIAN;
     }
 
-    public void setNoidungBL(String noidungBL) {
-        NoidungBL = noidungBL;
+    public String getNOIDUNG() {
+        return NOIDUNG;
     }
 
-    public String getThoiGianBL() {
-        return ThoiGianBL;
-    }
-
-    public void setThoiGianBL(String thoiGianBL) {
-        ThoiGianBL = thoiGianBL;
+    public void setNOIDUNG(String NOIDUNG) {
+        this.NOIDUNG = NOIDUNG;
     }
 }

@@ -1,36 +1,20 @@
 package com.example.tanhung_laptop.Models;
 
 public class GioHang {
-    int IDGIOHANG;
-    int IDSP;
-    String TENSP;
     int IDTK;
+    int IDLT;
+    String TENLAPTOP;
     int SOLUONG;
     int TONGTIEN;
-    byte[] HINHANH;
+    String HINHANH;
 
-    public int getIDGIOHANG() {
-        return IDGIOHANG;
-    }
-
-    public void setIDGIOHANG(int IDGIOHANG) {
-        this.IDGIOHANG = IDGIOHANG;
-    }
-
-    public int getIDSP() {
-        return IDSP;
-    }
-
-    public void setIDSP(int IDSP) {
-        this.IDSP = IDSP;
-    }
-
-    public String getTENSP() {
-        return TENSP;
-    }
-
-    public void setTENSP(String TENSP) {
-        this.TENSP = TENSP;
+    public GioHang(int IDTK, int IDLT, String TENLAPTOP, int SOLUONG, int TONGTIEN, String HINHANH) {
+        this.IDTK = IDTK;
+        this.IDLT = IDLT;
+        this.TENLAPTOP = TENLAPTOP;
+        this.SOLUONG = SOLUONG;
+        this.TONGTIEN = TONGTIEN;
+        this.HINHANH = HINHANH;
     }
 
     public int getIDTK() {
@@ -39,6 +23,22 @@ public class GioHang {
 
     public void setIDTK(int IDTK) {
         this.IDTK = IDTK;
+    }
+
+    public int getIDLT() {
+        return IDLT;
+    }
+
+    public void setIDLT(int IDLT) {
+        this.IDLT = IDLT;
+    }
+
+    public String getTENLAPTOP() {
+        return TENLAPTOP;
+    }
+
+    public void setTENLAPTOP(String TENLAPTOP) {
+        this.TENLAPTOP = TENLAPTOP;
     }
 
     public int getSOLUONG() {
@@ -57,21 +57,11 @@ public class GioHang {
         this.TONGTIEN = TONGTIEN;
     }
 
-    public byte[] getHINHANH() {
+    public String getHINHANH() {
         return HINHANH;
     }
 
-    public void setHINHANH(byte[] HINHANH) {
-        this.HINHANH = HINHANH;
-    }
-
-    public GioHang(int IDGIOHANG, int IDSP, String TENSP, int IDTK, int SOLUONG, int TONGTIEN, byte[] HINHANH) {
-        this.IDGIOHANG = IDGIOHANG;
-        this.IDSP = IDSP;
-        this.TENSP = TENSP;
-        this.IDTK = IDTK;
-        this.SOLUONG = SOLUONG;
-        this.TONGTIEN = TONGTIEN;
+    public void setHINHANH(String HINHANH) {
         this.HINHANH = HINHANH;
     }
 }

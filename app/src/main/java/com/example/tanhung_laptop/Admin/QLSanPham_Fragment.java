@@ -23,9 +23,16 @@ import com.example.tanhung_laptop.Adapter.LaptopAdminAdapter;
 import com.example.tanhung_laptop.Models.Category;
 import com.example.tanhung_laptop.Models.LAPTOP;
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.Retrofit.API;
+import com.example.tanhung_laptop.Retrofit.RetrofitClient;
+import com.example.tanhung_laptop.Retrofit.Utils;
 import com.example.tanhung_laptop.User.BatDau_activity;
 
 import java.util.ArrayList;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class QLSanPham_Fragment extends Fragment {
 
@@ -37,7 +44,9 @@ public class QLSanPham_Fragment extends Fragment {
     LaptopAdminAdapter adapter;
     CategoryAdapter categoryAdapter;
     int IDNSX;
-    String sql;
+    API api;
+    CompositeDisposable compositeDisposable;
+
     public QLSanPham_Fragment() {
 
     }
@@ -52,8 +61,10 @@ public class QLSanPham_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view= inflater.inflate(R.layout.fragment_q_l_san_pham_, container, false);
+        view = inflater.inflate(R.layout.fragment_q_l_san_pham_, container, false);
         gridView_SanPham = (GridView) view.findViewById(R.id.gridviewQLSanPham);
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable = new CompositeDisposable();
         Anhxa();
         listCategory = getListCategory();
         categoryAdapter = new CategoryAdapter(getActivity(), R.layout.item_select, listCategory);
@@ -83,7 +94,7 @@ public class QLSanPham_Fragment extends Fragment {
                 Intent intent = new Intent(getActivity(), SuaSanPham_Activity.class);
 
 
-                intent.putExtra("id",i);
+                intent.putExtra("id", i);
 
                 startActivity(intent);
 
@@ -104,32 +115,71 @@ public class QLSanPham_Fragment extends Fragment {
         GetData();
         super.onStart();
     }
+
     private void GetData() {
-        if(IDNSX ==0)
-        {
-            sql="SELECT * FROM LAPTOP";
-        }
-        else {
-            sql =" SELECT * FROM LAPTOP WHERE IDNSX = " + IDNSX;
+        if (IDNSX == 0) {
+            //sql="SELECT * FROM LAPTOP";
+
+            compositeDisposable.add(api.layhetSp()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            laptopModel -> {
+                                laptopArrayList.clear();
+                                if (laptopModel.isSuccess()) {
+
+
+                                    for (int i = 0; i < laptopModel.getResult().size(); i++) {
+                                        laptopArrayList.add(laptopModel.getResult().get(i));
+                                    }
+                                    Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
+
+                                }
+                                adapter.notifyDataSetChanged();
+                            }, throwable -> {
+                                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            }));
+
+        } else {
+            //sql =" SELECT * FROM LAPTOP WHERE IDNSX = " + IDNSX;
+
+            compositeDisposable.add(api.laySpnsx(IDNSX)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            laptopModel -> {
+                                if (laptopModel.isSuccess()) {
+                                    laptopArrayList.clear();
+                                    for (int i = 0; i < laptopModel.getResult().size(); i++) {
+                                        laptopArrayList.add(laptopModel.getResult().get(i));
+                                    }
+                                    Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }, throwable -> {
+//                            Log.e("Lỗi", throwable.getMessage());
+                                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            }));
         }
 
-        Cursor cursor = BatDau_activity.database.GetData(sql);
-        laptopArrayList.clear();
-        while (cursor.moveToNext())
-        {
-            laptopArrayList.add(new LAPTOP(
-                    cursor.getInt(0),
-                    cursor.getBlob(1),
-                    cursor.getString(2),
-                    cursor.getInt(3),
-                    cursor.getInt(4),
-                    cursor.getString(5),
-                    cursor.getInt(6),
-                    cursor.getInt(7)
-            ));
-        }
-        adapter.notifyDataSetChanged();
+//        Cursor cursor = BatDau_activity.database.GetData(sql);
+//        laptopArrayList.clear();
+//        while (cursor.moveToNext())
+//        {
+//            laptopArrayList.add(new LAPTOP(
+//                    cursor.getInt(0),
+//                    cursor.getString(1),
+//                    cursor.getString(2),
+//                    cursor.getInt(3),
+//                    cursor.getInt(4),
+//                    cursor.getString(5),
+//                    cursor.getInt(6),
+//                    cursor.getInt(7)
+//            ));
+//        }
+//        adapter.notifyDataSetChanged();
     }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         MenuInflater inflater = getActivity().getMenuInflater();
@@ -141,30 +191,47 @@ public class QLSanPham_Fragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.menu_delete_item:
                 LAPTOP laptop = LaptopAdminAdapter.laptopList.get(info.position);
-                BatDau_activity.database.DELETE_SANPHAM(
-                        laptop.getIDLT()
-                );
 
-                Toast.makeText(getActivity(),"Xóa thành công",Toast.LENGTH_LONG).show();
-                GetData();
+                compositeDisposable.add(api.xoalt(laptop.getIDLT())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                messageModel -> {
+                                    GetData();
+                                    Toast.makeText(getContext(), messageModel.getMessage(), Toast.LENGTH_SHORT).show();
+                                }, throwable -> {
+                                    Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                }));
+//                BatDau_activity.database.DELETE_SANPHAM(
+//                        laptop.getIDLT()
+//                );
+//
+//                Toast.makeText(getActivity(), "Xóa thành công", Toast.LENGTH_LONG).show();
+
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
     }
+
     private ArrayList<Category> getListCategory() {
         ArrayList<Category> list = new ArrayList<>();
 
-        list.add(new Category("Apple",1));
-        list.add(new Category("ASUS",2));
-        list.add(new Category("Dell",3));
+        list.add(new Category("Apple", 1));
+        list.add(new Category("ASUS", 2));
+        list.add(new Category("Dell", 3));
         list.add(new Category("HP", 4));
         list.add(new Category("Acer", 5));
 
         return list;
+    }
+
+    @Override
+    public void onDestroyView() {
+        compositeDisposable.clear();
+        super.onDestroyView();
     }
 }

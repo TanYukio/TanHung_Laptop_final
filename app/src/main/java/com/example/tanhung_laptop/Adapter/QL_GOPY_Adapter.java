@@ -51,10 +51,10 @@ public class QL_GOPY_Adapter extends BaseAdapter {
     }
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        QL_GOPY_Adapter.ViewHolder holder;
+        ViewHolder holder;
 
         if (view == null){
-            holder = new QL_GOPY_Adapter.ViewHolder();
+            holder = new ViewHolder();
             LayoutInflater inflater;
             inflater = (LayoutInflater) context.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(layout, null);
@@ -64,7 +64,7 @@ public class QL_GOPY_Adapter extends BaseAdapter {
 
             view.setTag(holder);
         } else {
-            holder = (QL_GOPY_Adapter.ViewHolder) view.getTag();
+            holder = (ViewHolder) view.getTag();
         }
 
         GopY gopY = gopYList.get(i);

@@ -75,7 +75,6 @@ public class HoaDonAdapter extends BaseAdapter {
         holder.txtdiachi.setText("Địa chỉ : " +  hoaDon.getDIACHI());
         holder.txtghichu.setText("Ghi chú : " + hoaDon.getGHICHU());
         id = hoaDon.getIDHOADON();
-        idcthd = hoaDon.getIDCTHOADON();
 
 
 

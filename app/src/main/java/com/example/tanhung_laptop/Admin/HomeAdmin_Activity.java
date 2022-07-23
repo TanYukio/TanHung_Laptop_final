@@ -20,11 +20,18 @@ import android.widget.Toast;
 
 import com.example.tanhung_laptop.Models.TAIKHOAN;
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.Retrofit.API;
+import com.example.tanhung_laptop.Retrofit.RetrofitClient;
+import com.example.tanhung_laptop.Retrofit.Utils;
 import com.example.tanhung_laptop.TimKiem;
 import com.example.tanhung_laptop.User.BatDau_activity;
 import com.example.tanhung_laptop.User.DangNhap_Activity;
 import com.example.tanhung_laptop.User.MainActivity;
 import com.google.android.material.navigation.NavigationView;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class HomeAdmin_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     // Drawer
@@ -33,37 +40,50 @@ public class HomeAdmin_Activity extends AppCompatActivity implements NavigationV
     ImageView menu;
     Toolbar toolbar;
     EditText edt_timkiem;
+    CompositeDisposable compositeDisposable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_admin);
-        Toast.makeText(this, "Chào mừng bạn đến với giao diện Admin!", Toast.LENGTH_SHORT).show();
 
 
         anh_xa();
-
-
-
         ActionBar();
 
     }
 
     private TAIKHOAN laythongtin(int idtk) {
 
-        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM TAIKHOAN WHERE IDTAIKHOAN = " + idtk);
-        while (cursor.moveToNext()) {
-            return new TAIKHOAN(
-                    cursor.getInt(0),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getInt(3),
-                    cursor.getString(4),
-                    cursor.getString(5),
-                    cursor.getInt(6),
-                    cursor.getString(7),
-                    cursor.getBlob(8)
-            );
-        }
+        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+        compositeDisposable.add(api.thongTinTaiKhoan(idtk)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        taiKhoanModel -> {
+                            if (taiKhoanModel.isSuccess()) {
+//
+                            }
+                        }, throwable -> {
+//                            Log.e("Lỗi", throwable.getMessage());
+                            Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
+
+//        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM TAIKHOAN WHERE IDTAIKHOAN = " + idtk);
+//        while (cursor.moveToNext()) {
+//            return new TAIKHOAN(
+//                    cursor.getInt(0),
+//                    cursor.getString(1),
+//                    cursor.getString(2),
+//                    cursor.getInt(3),
+//                    cursor.getString(4),
+//                    cursor.getString(5),
+//                    cursor.getInt(6),
+//                    cursor.getString(7),
+//                    cursor.getString(8)
+//            );
+//        }
         return null;
 
     }

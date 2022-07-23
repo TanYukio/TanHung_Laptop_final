@@ -52,25 +52,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private TAIKHOAN laythongtin(int idtk) {
-
-            Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM TAIKHOAN WHERE IDTAIKHOAN = " + idtk);
-            while (cursor.moveToNext()) {
-                return new TAIKHOAN(
-                        cursor.getInt(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getInt(3),
-                        cursor.getString(4),
-                        cursor.getString(5),
-                        cursor.getInt(6),
-                        cursor.getString(7),
-                        cursor.getBlob(8)
-                );
-            }
-            return null;
-
-    }
 
     private void anh_xa() {
         drawerlaout=findViewById(R.id.drawerlaout);

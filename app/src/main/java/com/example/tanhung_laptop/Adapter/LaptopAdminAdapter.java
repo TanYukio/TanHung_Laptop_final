@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +78,7 @@ public class LaptopAdminAdapter extends BaseAdapter {
         }
 
         LAPTOP laptop = laptopList.get(i);
-        String gia = String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(laptop.getGIA())) + " VNĐ";
+        String gia = String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(laptop.getGIASP())) + " VNĐ";
         holder.txt_TenSP.setText(laptop.getTENLAPTOP());
         holder.txt_GiaSP.setText("Giá : "+ gia);
         holder.txt_SoLuong.setText("Số Lượng : " + String.valueOf(laptop.getSOLUONG()));
@@ -86,9 +87,12 @@ public class LaptopAdminAdapter extends BaseAdapter {
         id = laptop.getIDLT();
 
         // chuyen byte[] -> ve bitmap
-        byte[] hinhAnh = laptop.getHINHANH();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(hinhAnh,0, hinhAnh.length);
-        holder.img_HinhAnh.setImageBitmap(bitmap);
+        byte[] decodedString = Base64.decode(laptop.getHINHANH(), Base64.DEFAULT);
+        Bitmap imgBitMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        holder.img_HinhAnh.setImageBitmap(imgBitMap);
+//        byte[] hinhAnh = laptop.getHINHANH();
+//        Bitmap bitmap = BitmapFactory.decodeByteArray(hinhAnh,0, hinhAnh.length);
+//        holder.img_HinhAnh.setImageBitmap(bitmap);
 
         return view;
     }

@@ -2,32 +2,46 @@ package com.example.tanhung_laptop.User;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.tanhung_laptop.Adapter.GioHangAdapter;
+import com.example.tanhung_laptop.Models.GioHang;
 import com.example.tanhung_laptop.Models.TAIKHOAN;
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.Retrofit.API;
+import com.example.tanhung_laptop.Retrofit.RetrofitClient;
+import com.example.tanhung_laptop.Retrofit.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ThongTinNguoiDung_Activity extends AppCompatActivity {
 
@@ -40,6 +54,14 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
     final int REQUEST_CODE_FOLDER=456;
     boolean checkimage = true,checkimagecam=true;
     int IDTAIKHOAN;
+    CompositeDisposable compositeDisposable;
+
+    @Override
+    protected void onStart() {
+//        GetData();
+        super.onStart();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,13 +86,28 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
                 }else {
                     BitmapDrawable bitmapDrawable = (BitmapDrawable) img_user_cn.getDrawable();
                     Bitmap bitmap = bitmapDrawable.getBitmap();
-                    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG,100,byteArray);
-                    byte[] hinhAnh = byteArray.toByteArray();
-                    BatDau_activity.database.UPDATE_IMAGE_TK(IDTAIKHOAN,hinhAnh);
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); // bm is the bitmap object
+                    byte[] b = baos.toByteArray();
+
+                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+                    compositeDisposable =  new CompositeDisposable();
+                    compositeDisposable.add(api.doiavata(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),
+                                    encodedImage)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    messageModel -> {
+                                        Toast.makeText(ThongTinNguoiDung_Activity.this, messageModel.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }, throwable -> {
+                                        Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }));
+//                    BatDau_activity.database.UPDATE_IMAGE_TK(IDTAIKHOAN,hinhAnh);
                     imageButtonCamera.setImageResource(R.drawable.ic_baseline_photo_camera_24);
                     imageButtonFolder.setEnabled(true);
-                    GetData();
                 }
 
             }
@@ -92,14 +129,28 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
                 }else {
                     BitmapDrawable bitmapDrawable = (BitmapDrawable) img_user_cn.getDrawable();
                     Bitmap bitmap = bitmapDrawable.getBitmap();
-                    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG,100,byteArray);
-                    byte[] hinhAnh = byteArray.toByteArray();
-                    BatDau_activity.database.UPDATE_IMAGE_TK(IDTAIKHOAN,hinhAnh);
-                    imageButtonFolder.setImageResource(R.drawable.ic_baseline_folder_open_24);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); // bm is the bitmap object
+                    byte[] b = baos.toByteArray();
+
+                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+                    compositeDisposable =  new CompositeDisposable();
+                    compositeDisposable.add(api.doiavata(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),
+                                    encodedImage)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    messageModel -> {
+                                        Toast.makeText(ThongTinNguoiDung_Activity.this, messageModel.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }, throwable -> {
+                                        Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }));
+
+                    imageButtonFolder.setImageResource(R.drawable.folder_open_white);
                     imageButtonCamera.setEnabled(true);
-                    Toast.makeText(ThongTinNguoiDung_Activity.this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                    GetData();
+//                    Toast.makeText(ThongTinNguoiDung_Activity.this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -109,30 +160,44 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
     private void GetData() {
         //get data
         int id = DangNhap_Activity.taikhoan.getIDTAIKHOAN();
-        TAIKHOAN taiKhoan = BatDau_activity.database.Load(id);
-        String tentaikhoan = taiKhoan.getTENTAIKHOAN();
-        int sdt = taiKhoan.getSDT();
-        String email = taiKhoan.getEMAIL();
-        String diachi = taiKhoan.getDIACHI();
-        enableControl();
-        if (taiKhoan.getHINHANH() == null){
-            img_user_cn.setImageResource(R.drawable.user);
-        }else
-        {
-            byte[] hinhAnh = taiKhoan.getHINHANH();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(hinhAnh,0, hinhAnh.length);
-            img_user_cn.setImageBitmap(bitmap);
-//            Toast.makeText(InforUserActivity.this, "sssss : " + hinhAnh, Toast.LENGTH_SHORT).show();
+        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+        compositeDisposable.add(api.thongTinTaiKhoan(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        taiKhoanModel -> {
+                            if (taiKhoanModel.isSuccess()) {
+                                TAIKHOAN taiKhoan = taiKhoanModel.getResult().get(0);
+                                String tentaikhoan = taiKhoan.getTENTAIKHOAN();
+                                int sdt = taiKhoan.getSDT();
+                                String email = taiKhoan.getEMAIL();
+                                String diachi = taiKhoan.getDIACHI();
+                                enableControl();
+                                if (taiKhoan.getHINHANH() == null){
+                                    img_user_cn.setImageResource(R.drawable.ic_baseline_person_pin_24);
+                                }else
+                                {
+                                    byte[] decodedString = Base64.decode(taiKhoan.getHINHANH(), Base64.DEFAULT);
+                                    Bitmap imgBitMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                    img_user_cn.setImageBitmap(imgBitMap);
 
-        }
-        IDTAIKHOAN = taiKhoan.getIDTAIKHOAN();
+                                    edtTaikhoan.setText(tentaikhoan);
+                                    edtTaikhoan.setEnabled(false);
+                                    edtSdt.setText(String.valueOf(sdt));
+                                    edtEmail.setText(email);
+                                    edtDiachi.setText(diachi);
+                                }
+                                IDTAIKHOAN = taiKhoan.getIDTAIKHOAN();
+                            }
+                        }, throwable -> {
+//                            Log.e("Lỗi", throwable.getMessage());
+                            Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
 
 
-        edtTaikhoan.setText(tentaikhoan);
-        edtTaikhoan.setEnabled(false);
-        edtSdt.setText(String.valueOf(sdt));
-        edtEmail.setText(email);
-        edtDiachi.setText(diachi);
+
+
 
 
     }
@@ -165,10 +230,27 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
                 }
                 else{
                     btnCapnhat.setText("Cập nhật");
-                    BatDau_activity.database.CapNhatTaiKhoan(DangNhap_Activity.taikhoan.getIDTAIKHOAN(), Integer.parseInt(edtSdt.getText().toString().trim()),
-                            edtEmail.getText().toString(), edtDiachi.getText().toString());
-                    Toast.makeText(ThongTinNguoiDung_Activity.this, "Cập nhật thành công !", Toast.LENGTH_SHORT).show();
-                    onBackPressed();
+
+                    // PHP cập nhật tài khoản
+//                    BatDau_activity.database.CapNhatTaiKhoan(Integer.parseInt(edtSdt.getText().toString().trim()),
+//                            edtEmail.getText().toString(), edtDiachi.getText().toString());
+                    int idtk = DangNhap_Activity.taikhoan.getIDTAIKHOAN();
+                    String sdt = edtSdt.getText().toString().trim();
+                    String email = edtEmail.getText().toString();
+                    String diachi = edtDiachi.getText().toString();
+                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+
+                    compositeDisposable =  new CompositeDisposable();
+                    compositeDisposable.add(api.capnhatthongtin(idtk, sdt, email, "2000-06-10",diachi)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    messageModel -> {
+                                        // Đều xuất thông báo khi thành công lẫn thất bại
+                                        Toast.makeText(getApplicationContext(), messageModel.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }, throwable -> {
+                                        Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }));
                 }
             }
         });
@@ -178,11 +260,76 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //                startActivity(new Intent(ThongTinNguoiDung_Activity.this, .class));
-                Toast.makeText(ThongTinNguoiDung_Activity.this, " Đổi mật khẩu ", Toast.LENGTH_SHORT).show();
+                showdialog();
             }
         });
 
 
+    }
+    private void showdialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ThongTinNguoiDung_Activity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_doimatkhau,null);
+        final EditText nhapmkcu = view.findViewById(R.id.nhapmkcu);
+        final EditText nhapmkmoi = view.findViewById(R.id.nhapmkmoi);
+        final EditText nhaplaimk = view.findViewById(R.id.nhaplaimk);
+        builder.setView(view);
+        builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (nhapmkcu.getText().toString().isEmpty())
+                {
+                    Toast.makeText(ThongTinNguoiDung_Activity.this, "Không được để trống!", Toast.LENGTH_SHORT).show();
+                }
+                else if (nhapmkmoi.getText().toString().isEmpty())
+                {
+                    Toast.makeText(ThongTinNguoiDung_Activity.this, "Không được để trống!", Toast.LENGTH_SHORT).show();
+
+                }
+                else if (nhaplaimk.getText().toString().isEmpty())
+                {
+                    Toast.makeText(ThongTinNguoiDung_Activity.this, "Không được để trống!", Toast.LENGTH_SHORT).show();
+
+                }
+                else if (nhapmkmoi.getText().toString().equals(nhaplaimk.getText().toString()))
+                {
+                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+                    compositeDisposable =  new CompositeDisposable();
+                    compositeDisposable.add(api.doimatkhau(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),
+                                    nhapmkcu.getText().toString(),
+                                    nhapmkmoi.getText().toString())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    taiKhoanModel -> {
+                                        if (taiKhoanModel.isSuccess())
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            showdialog();
+                                        }
+                                        Toast.makeText(ThongTinNguoiDung_Activity.this, taiKhoanModel.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }, throwable -> {
+                                        Log.e("Lỗi", throwable.getMessage());
+                                        Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }));
+                }else
+                {
+                    nhaplaimk.setText("");
+                    Toast.makeText(ThongTinNguoiDung_Activity.this, " Mật khẩu không khớp mật khẩu mới!", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        }).setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.show();
     }
 
     @Override

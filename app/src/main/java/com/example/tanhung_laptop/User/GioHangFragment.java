@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -25,10 +26,19 @@ import android.widget.Toast;
 import com.example.tanhung_laptop.Adapter.GioHangAdapter;
 import com.example.tanhung_laptop.Models.GioHang;
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.Retrofit.API;
+import com.example.tanhung_laptop.Retrofit.RetrofitClient;
+import com.example.tanhung_laptop.Retrofit.Utils;
 
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class GioHangFragment extends Fragment {
     private View view;
@@ -37,8 +47,10 @@ public class GioHangFragment extends Fragment {
     GioHangAdapter adapter;
     Button btn_thanhtoan;
     TextView txtthongbao,tongthanhtien;
-    int tong;
+    double tong;
+    String thoigian;
     int idcthd = 0;
+    CompositeDisposable compositeDisposable;
 
     public GioHangFragment() {
         // Required empty public constructor
@@ -58,12 +70,7 @@ public class GioHangFragment extends Fragment {
 
         GetData();
 
-        btn_thanhtoan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showdialog();
-            }
-        });
+
 
 
 
@@ -73,19 +80,81 @@ public class GioHangFragment extends Fragment {
         return view;
     }
 
+    private void ktGH(){
+        if (DangNhap_Activity.taikhoan.getIDTAIKHOAN() == -1)
+        {
+            txtthongbao.setText(" Bạn hãy đăng nhập để có thể mua hàng !");
+        } else if (sanPhamArrayList.isEmpty())
+        {
+            txtthongbao.setText(" Bạn chưa mua hàng !");
+            btn_thanhtoan.setEnabled(false);
+            btn_thanhtoan.setBackgroundResource(R.color.xam);
+            tongthanhtien.setText("0");
+        }
+        else
+        {
+            Tongtien();
+            btn_thanhtoan.setEnabled(true);
+            btn_thanhtoan.setBackgroundResource(R.color.purple_500);
+            btn_thanhtoan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showdialog();
+                }
+            });
+        }
+    }
+
     @Override
     public void onStart() {
-        Tongtien();
+        GetData();
 
         super.onStart();
     }
+    private void themhd(EditText ghichu,EditText diachi)
+    {
+        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+        compositeDisposable.add(api.themhd(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),thoigian,
+                        tong,ghichu.getText().toString(),diachi.getText().toString()
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        laptopModel -> {
+                            for (int position = 0; position<GioHangAdapter.sanPhamGioHangList.size();position++)
+                            {
+                                GioHang themhoadon = GioHangAdapter.sanPhamGioHangList.get(position);
+                                Log.e("idlt",themhoadon.getIDLT() + " , " + themhoadon.getTENLAPTOP());
+                                themcthd(themhoadon.getIDLT(),themhoadon.getTENLAPTOP(),themhoadon.getSOLUONG(),themhoadon.getTONGTIEN());
 
+                            }
+                            xoahetgh();
+                        }, throwable -> {
+                            Log.e("Lỗi them hd", throwable.getMessage());
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
+    }
     private void Tongtien() {
-        Cursor cursor = BatDau_activity.database.GetData("SELECT SUM ( TONGTIEN ) FROM GIOHANG WHERE IDTK = "
-                + DangNhap_Activity.taikhoan.getIDTAIKHOAN());
-        cursor.moveToNext();
-        tong = cursor.getInt(0);
-        tongthanhtien.setText(String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(tong) + " VNĐ"));
+
+
+        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+        compositeDisposable.add(api.laytongtien(DangNhap_Activity.taikhoan.getIDTAIKHOAN())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        doubleModel -> {
+//                            Toast.makeText(getContext(), doubleModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            if (doubleModel.isSuccess())
+                            {
+                                tong = doubleModel.getResult();
+                                tongthanhtien.setText(String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(tong) + " VNĐ"));
+                            }
+                        }, throwable -> {
+                            Log.e("Lỗi lay tong tien", throwable.getMessage());
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
     }
 
     private void AnhXa() {
@@ -94,36 +163,33 @@ public class GioHangFragment extends Fragment {
         tongthanhtien = (TextView) view.findViewById(R.id.tongthanhtien);
 
         btn_thanhtoan = (Button) view.findViewById(R.id.thanhtoan_giohang);
-
-
     }
 
     private void GetData() {
         //get data
+        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+        compositeDisposable.add(api.laygh(DangNhap_Activity.taikhoan.getIDTAIKHOAN())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        giohangModel -> {
+                            sanPhamArrayList.clear();
+                            if (giohangModel.isSuccess()) {
+//                                Log.e("1",laptopModel.getResult().get(0).getTENLAPTOP());
+                                for (int i= 0;i<giohangModel.getResult().size();i++){
+                                    sanPhamArrayList.add(giohangModel.getResult().get(i));
+                                }
+                                Toast.makeText(getContext(), giohangModel.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                            adapter.notifyDataSetChanged();
+                            Log.e("Getdata", Calendar.getInstance().getTime() + "Check" + giohangModel.getResult().size());
+                            ktGH();
+                        }, throwable -> {
+                            Log.e("Lỗi loi lay du lieu", throwable.getMessage());
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
 
-        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM GIOHANG WHERE IDTK = " + DangNhap_Activity.taikhoan.getIDTAIKHOAN());
-        sanPhamArrayList.clear();
-        while (cursor.moveToNext())
-        {
-            sanPhamArrayList.add(new GioHang(
-                    cursor.getInt(0),
-                    cursor.getInt(1),
-                    cursor.getString(2),
-                    cursor.getInt(3),
-                    cursor.getInt(4),
-                    cursor.getInt(5),
-                    cursor.getBlob(6)
-            ));
-        }
-        adapter.notifyDataSetChanged();
-
-
-        if (DangNhap_Activity.taikhoan.getIDTAIKHOAN() == -1)
-        {
-            txtthongbao.setText(" Bạn hãy đăng nhập để có thể mua hàng !");
-        }else if (sanPhamArrayList.isEmpty()){
-            txtthongbao.setText(" Bạn chưa mua hàng !");
-        }
     }
     private void showdialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -137,32 +203,9 @@ public class GioHangFragment extends Fragment {
         builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
-                if(BatDau_activity.database.HoaDonChuaCoTrongHD()){
-                    idcthd = 1;
-                }
-                else {
-
-                    Cursor cursor = BatDau_activity.database.GetData("SELECT IDCTHOADON FROM CHITIETHOADON ORDER BY IDCTHOADON DESC");
-                    cursor.moveToNext();
-                    idcthd = cursor.getInt(0) + 1;
-                }
-
-
-
-                for (int position = 0; position<GioHangAdapter.sanPhamGioHangList.size();position++)
-                {
-                    GioHang themhoadon = GioHangAdapter.sanPhamGioHangList.get(position);
-                    BatDau_activity.database.INSERT_CTHOADON(idcthd, themhoadon.getIDTK(), themhoadon.getIDSP(), themhoadon.getTENSP(),
-                            themhoadon.getSOLUONG(), themhoadon.getTONGTIEN());
-                    BatDau_activity.database.UPDATE_SOLUONG(themhoadon.getIDSP(),themhoadon.getSOLUONG());
-
-                }
-                BatDau_activity.database.INSERT_HOADON(tong,idcthd,diachi.getText().toString(),ghichu.getText().toString(),DangNhap_Activity.taikhoan.getIDTAIKHOAN());
-                BatDau_activity.database.DELETE_GIOHANG(DangNhap_Activity.taikhoan.getIDTAIKHOAN());
-                GetData();
-                Tongtien();
-                Toast.makeText(getActivity(),"Thanh toán thành công",Toast.LENGTH_LONG).show();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                thoigian = simpleDateFormat.format(Calendar.getInstance().getTime());
+                themhd(ghichu,diachi);
                 startActivity(new Intent(getActivity(), MainActivity.class));
 
             }
@@ -172,6 +215,56 @@ public class GioHangFragment extends Fragment {
             }
         });
         builder.show();
+    }
+    private void themcthd(int idlt, String tenlaptop, int soluong, int thanhtien)
+    {
+        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+        Log.e("time", thoigian);
+        compositeDisposable.add(api.themcthd(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),thoigian,idlt,
+                        tenlaptop,soluong,thanhtien
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        laptopModel -> {
+
+                        }, throwable -> {
+                            Log.e("Lỗi themcthd", throwable.getMessage());
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
+    }
+    private void xoahetgh()
+    {
+        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+
+        compositeDisposable.add(api.xoahetgh(DangNhap_Activity.taikhoan.getIDTAIKHOAN())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        laptopModel -> {
+                            GetData();
+                        }, throwable -> {
+                            Log.e("Lỗi xoa het", throwable.getMessage());
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
+    }
+    private void xoagh(int idlt)
+    {
+        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+
+        compositeDisposable.add(api.xoagh(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),idlt)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        laptopModel -> {
+                            GetData();
+                        }, throwable -> {
+                            Log.e("Lỗi xoa 1", throwable.getMessage());
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
     }
 
     @Override
@@ -191,12 +284,12 @@ public class GioHangFragment extends Fragment {
             case R.id.menu_delete_item:
 
                 GioHang gioHang = GioHangAdapter.sanPhamGioHangList.get(info.position);
-                BatDau_activity.database.DELETE_DOAN(
-                        gioHang.getIDSP(),
-                        gioHang.getIDTK()
-                );
-
-                Toast.makeText(getActivity(),"Xóa thành công",Toast.LENGTH_LONG).show();
+//                BatDau_activity.database.DELETE_DOAN(
+//                        gioHang.getIDSP(),
+//                        gioHang.getIDTK()
+//                );
+                xoagh(gioHang.getIDLT());
+//                Toast.makeText(getActivity(),"Xóa thành công",Toast.LENGTH_LONG).show();
                 GetData();
                 Tongtien();
                 return true;

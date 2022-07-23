@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -15,10 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tanhung_laptop.Adapter.CategoryAdapter;
+import com.example.tanhung_laptop.Adapter.CategoryAdapter_DSTK;
 import com.example.tanhung_laptop.Adapter.HoaDonAdapter;
 import com.example.tanhung_laptop.Models.Category;
+import com.example.tanhung_laptop.Models.DSTK;
 import com.example.tanhung_laptop.Models.HoaDon;
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.Retrofit.API;
+import com.example.tanhung_laptop.Retrofit.RetrofitClient;
+import com.example.tanhung_laptop.Retrofit.Utils;
 import com.example.tanhung_laptop.User.BatDau_activity;
 import com.example.tanhung_laptop.User.ChiTietDonHang_Activity;
 
@@ -26,36 +32,47 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class HoaDon_Activity extends AppCompatActivity {
     Spinner spnAddTheloai_TK;
-    ArrayList<Category> listCategory;
-    ArrayList<Category> list;
-    CategoryAdapter categoryAdapter;
+    ArrayList<DSTK> list;
+    CategoryAdapter_DSTK categoryAdapter_dstk;
     int Danhmuc;
 
     ListView Listview_Lichsu;
     ArrayList<HoaDon> hoaDonArrayList;
     HoaDonAdapter adapter;
     LinearLayout layoutdoanhthu;
-    TextView title_qlhd,tongtien_HD,tongchi;
+    TextView title_qlhd, tongtien_HD, tongchi;
     ImageButton ibtnExit_lichsu;
+    CompositeDisposable compositeDisposable;
+    API api;
     int idcthd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_don_hang);
         AnhXa();
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable = new CompositeDisposable();
+
         Listview_Lichsu = (ListView) findViewById(R.id.listview_danhsachhoadon_lichsu);
+
         spnAddTheloai_TK = findViewById(R.id.spnAddTheloai_TK);
-        listCategory = getListCategory();
-        categoryAdapter = new CategoryAdapter(HoaDon_Activity.this, R.layout.item_select, listCategory);
-        spnAddTheloai_TK.setAdapter(categoryAdapter);
+        list = new ArrayList<>();
+        getListCategory();
+        categoryAdapter_dstk = new CategoryAdapter_DSTK(HoaDon_Activity.this, R.layout.item_select, list);
+        spnAddTheloai_TK.setAdapter(categoryAdapter_dstk);
         Danhmuc = 0;
         spnAddTheloai_TK.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                Danhmuc = categoryAdapter.getItem(position).getIDcategory();
+                Danhmuc = categoryAdapter_dstk.getItem(position).getIDTAIKHOAN();
                 GetData();
                 GetTienAlone();
             }
@@ -67,12 +84,6 @@ public class HoaDon_Activity extends AppCompatActivity {
         });
 
 
-
-
-
-
-
-
         hoaDonArrayList = new ArrayList<>();
         adapter = new HoaDonAdapter(HoaDon_Activity.this, R.layout.danhsach_lichsu, hoaDonArrayList);
         Listview_Lichsu.setAdapter(adapter);
@@ -82,14 +93,15 @@ public class HoaDon_Activity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(HoaDon_Activity.this, ChiTietDonHang_Activity.class);
                 HoaDon hoaDon = HoaDonAdapter.ListHoaDon.get(i);
-                idcthd = hoaDon.getIDCTHOADON();
-                intent.putExtra("idcthd",idcthd);
+                idcthd = hoaDon.getIDHOADON();
+                intent.putExtra("idcthd", idcthd);
                 intent.putExtra("KEYHD", i);
                 startActivity(intent);
             }
         });
         GetTien();
         GetData();
+
     }
 
     @Override
@@ -110,59 +122,96 @@ public class HoaDon_Activity extends AppCompatActivity {
         ibtnExit_lichsu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                startActivity(new Intent(HoaDon_Activity.this,HomeAdmin_Activity.class));
             }
         });
     }
 
-    private void GetTien()
-    {
-        Cursor cursor1 = BatDau_activity.database.GetData("SELECT SUM ( TONGTIEN ) FROM HOADON ");
-        cursor1.moveToNext();
-        tongtien_HD.setText(String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(cursor1.getInt(0)) + " VNĐ"));
+    private void GetTien() {
+        compositeDisposable.add(api.layhettongtienhd()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        integerModel -> {
+                            if (integerModel.isSuccess()) {
+                                tongtien_HD.setText(String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(integerModel.getResult()) + " VNĐ"));
+
+//                                Toast.makeText(HoaDon_Activity.this, "Tổng tiền : " + String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(integerModel.getResult()) + " VNĐ"), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(this, integerModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        }, throwable -> {
+                            Log.e("Lỗi tiền 1 " , throwable.getMessage());
+                            Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
 
     }
-    private void GetTienAlone()
-    {
-        Cursor cursor1 = BatDau_activity.database.GetData("SELECT SUM ( TONGTIEN ) FROM HOADON WHERE IDTAIKHOAN = " + Danhmuc);
-        cursor1.moveToNext();
-        Toast.makeText(HoaDon_Activity.this, "Tổng tiền : " + String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(cursor1.getInt(0)) + " VNĐ"), Toast.LENGTH_LONG).show();
+
+    private void GetTienAlone() {
+        compositeDisposable.add(api.laytongtienhd(Danhmuc)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        integerModel -> {
+
+                            if (integerModel.isSuccess()) {
+                                Toast.makeText(HoaDon_Activity.this, "Tổng tiền : " + String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(integerModel.getResult()) + " VNĐ"), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(this, integerModel.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }, throwable -> {
+                            Log.e("Lỗi tiền " + Danhmuc  , throwable.getMessage());
+                            Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
 
     }
+
     private void GetData() {
         //get data
 
+        compositeDisposable.add(api.layHd(Danhmuc)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        hoadonModel -> {
+                            hoaDonArrayList.clear();
+                            if (hoadonModel.isSuccess()) {
+                                for (int i = 0; i < hoadonModel.getResult().size(); i++) {
+                                    hoaDonArrayList.add(hoadonModel.getResult().get(i));
+                                }
+//                                Toast.makeText(getApplicationContext(), "Thành công", Toast.LENGTH_LONG).show();
+                            }
+                            adapter.notifyDataSetChanged();
 
-        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM HOADON WHERE IDTAIKHOAN = " + Danhmuc);
-//        Toast.makeText(HoaDonAdmin.this, "sads : " + Danhmuc, Toast.LENGTH_SHORT).show();
-        hoaDonArrayList.clear();
-        while (cursor.moveToNext())
-        {
-            hoaDonArrayList.add(new HoaDon(
-                    cursor.getInt(0),
-                    cursor.getInt(1),
-                    cursor.getInt(2),
-                    cursor.getString(3),
-                    cursor.getString(4),
-                    cursor.getInt(5)
-            ));
-        }
-        adapter.notifyDataSetChanged();
+
+                        }, throwable -> {
+                            Log.e("Lỗi 1  " , throwable.getMessage());
+                            Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
+
     }
-    private ArrayList<Category> getListCategory() {
 
-        Cursor cursor =  BatDau_activity.database.GetData("SELECT * FROM TAIKHOAN ");
-        list = new ArrayList<>();
-        while (cursor.moveToNext()){
-            list.add(new Category(
-                            cursor.getString(1),
-                            cursor.getInt(0)
-                    )
-            );
-        }
+    private void getListCategory() {
+        compositeDisposable.add(api.layhetTkTK()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        theLoaiModel -> {
+                            list.clear();
+                            if (theLoaiModel.isSuccess()) {
+                                for (int i = 0; i < theLoaiModel.getResult().size(); i++) {
+                                    list.add(theLoaiModel.getResult().get(i));
+                                    Log.e("Dữ liệu", theLoaiModel.getResult().get(i).getTENTAIKHOAN() + " / "+ theLoaiModel.getResult().get(i).getIDTAIKHOAN());
+                                }
+//                                Toast.makeText(getApplicationContext(), "Thành công", Toast.LENGTH_LONG).show();
+                            }
+                            Log.e("DanhSach",list.size() + "");
+                            categoryAdapter_dstk.notifyDataSetChanged();
 
-
-
-        return list;
+                        }, throwable -> {
+                            Log.e("Lỗi 2 " , throwable.getMessage());
+                            Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
     }
 }

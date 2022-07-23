@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,9 +91,12 @@ public class TaiKhoanAdminAdapter extends BaseAdapter {
         id = taiKhoan.getIDTAIKHOAN();
 
         // chuyen byte[] -> ve bitmap
-        byte[] hinhAnh = taiKhoan.getHINHANH();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(hinhAnh,0, hinhAnh.length);
-        holder.img_user_qltk.setImageBitmap(bitmap);
+        byte[] decodedString = Base64.decode(taiKhoan.getHINHANH(), Base64.DEFAULT);
+        Bitmap imgBitMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        holder.img_user_qltk.setImageBitmap(imgBitMap);
+//        byte[] hinhAnh = taiKhoan.getHINHANH();
+//        Bitmap bitmap = BitmapFactory.decodeByteArray(hinhAnh,0, hinhAnh.length);
+//        holder.img_user_qltk.setImageBitmap(bitmap);
 
         return view;
     }

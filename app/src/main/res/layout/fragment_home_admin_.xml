@@ -5,10 +5,25 @@
     android:layout_height="match_parent"
     tools:context=".Admin.HomeAdmin_Fragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:gravity="center"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/thuky"
+            />
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_gravity="center"
+            android:text="Chào mừng bạn đến với giao diện Admin!"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
 
 </FrameLayout>

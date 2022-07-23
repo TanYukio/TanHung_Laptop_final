@@ -4,18 +4,28 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tanhung_laptop.Adapter.LAPTOP_ADAPTER;
 import com.example.tanhung_laptop.Models.LAPTOP;
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.Retrofit.API;
+import com.example.tanhung_laptop.Retrofit.RetrofitClient;
+import com.example.tanhung_laptop.Retrofit.Utils;
 
 import java.util.ArrayList;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class TrangChuFragment extends Fragment {
 
@@ -24,6 +34,7 @@ public class TrangChuFragment extends Fragment {
     ArrayList<LAPTOP> laptopArrayList;
     LAPTOP_ADAPTER adapter;
     TextView tieude;
+    CompositeDisposable compositeDisposable;
     public TrangChuFragment() {
         // Required empty public constructor
     }
@@ -55,22 +66,44 @@ public class TrangChuFragment extends Fragment {
     }
 
     private void GetData() {
-        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE LTMOI = 1");
-        laptopArrayList.clear();
-        while (cursor.moveToNext())
-        {
-            laptopArrayList.add(new LAPTOP(
-                    cursor.getInt(0),
-                    cursor.getBlob(1),
-                    cursor.getString(2),
-                    cursor.getInt(3),
-                    cursor.getInt(4),
-                    cursor.getString(5),
-                    cursor.getInt(6),
-                    cursor.getInt(7)
-            ));
-        }
-        adapter.notifyDataSetChanged();
+        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+        compositeDisposable.add(api.layspmoi()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        laptopModel -> {
+                            if (laptopModel.isSuccess()) {
+                                Log.e("1",laptopModel.getResult().get(0).getTENLAPTOP());
+
+                                laptopArrayList.clear();
+                                for (int i= 0;i<laptopModel.getResult().size();i++){
+                                    laptopArrayList.add(laptopModel.getResult().get(i));
+                                }
+//                                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
+//                                Log.e("đâ", laptopArrayList.size() + "");
+                                adapter.notifyDataSetChanged();
+                            }
+                        }, throwable -> {
+                            Log.e("Lỗi", throwable.getMessage());
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        }));
+//        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE LTMOI = 1");
+//        laptopArrayList.clear();
+//        while (cursor.moveToNext())
+//        {
+////            laptopArrayList.add(new LAPTOP(
+////                    cursor.getInt(0),
+////                    cursor.getBlob(1),
+////                    cursor.getString(2),
+////                    cursor.getInt(3),
+////                    cursor.getInt(4),
+////                    cursor.getString(5),
+////                    cursor.getInt(6),
+////                    cursor.getInt(7)
+////            ));
+//        }
+//        adapter.notifyDataSetChanged();
     }
 
     private void anh_xa() {

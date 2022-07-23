@@ -2,23 +2,31 @@ package com.example.tanhung_laptop.Models;
 
 public class LAPTOP {
     int IDLT;
-    byte[] HINHANH;
+    String HINHANH;
     String TENLAPTOP;
-    int GIA;
+    int GIASP;
     int SOLUONG;
     String MOTASP;
     int IDNSX;
     int LTMOI;
 
-    public LAPTOP(int IDLT, byte[] HINHANH, String TENLAPTOP, int GIA, int SOLUONG, String MOTASP, int IDNSX, int LTMOI) {
+    public LAPTOP(int IDLT, String HINHANH, String TENLAPTOP, int GIASP, int SOLUONG, String MOTASP, int IDNSX, int LTMOI) {
         this.IDLT = IDLT;
         this.HINHANH = HINHANH;
         this.TENLAPTOP = TENLAPTOP;
-        this.GIA = GIA;
+        this.GIASP = GIASP;
         this.SOLUONG = SOLUONG;
         this.MOTASP = MOTASP;
         this.IDNSX = IDNSX;
         this.LTMOI = LTMOI;
+    }
+
+    public String getHINHANH() {
+        return HINHANH;
+    }
+
+    public void setHINHANH(String HINHANH) {
+        this.HINHANH = HINHANH;
     }
 
     public int getIDLT() {
@@ -29,13 +37,6 @@ public class LAPTOP {
         this.IDLT = IDLT;
     }
 
-    public byte[] getHINHANH() {
-        return HINHANH;
-    }
-
-    public void setHINHANH(byte[] HINHANH) {
-        this.HINHANH = HINHANH;
-    }
 
     public String getTENLAPTOP() {
         return TENLAPTOP;
@@ -45,12 +46,12 @@ public class LAPTOP {
         this.TENLAPTOP = TENLAPTOP;
     }
 
-    public int getGIA() {
-        return GIA;
+    public int getGIASP() {
+        return GIASP;
     }
 
-    public void setGIA(int GIA) {
-        this.GIA = GIA;
+    public void setGIASP(int GIASP) {
+        this.GIASP = GIASP;
     }
 
     public int getSOLUONG() {

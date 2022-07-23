@@ -2,6 +2,7 @@ package com.example.tanhung_laptop.Adapter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +39,18 @@ public class BinhLuanAdapter extends RecyclerView.Adapter<BinhLuanAdapter.viewho
 
     @Override
     public void onBindViewHolder(@NonNull viewholder holder, int position) {
-        BinhLuan binhLuan = listBL.get(holder.getAdapterPosition());
 
-        Bitmap bitmap = BitmapFactory.decodeByteArray(binhLuan.getHinhBL(),0,binhLuan.getHinhBL().length);
-        holder.img_Hinh_binhluan.setImageBitmap(bitmap);
-        holder.txt_NoiDung_binhluan.setText(binhLuan.getNoidungBL());
-        holder.txtV_ThoiGian_binhluan.setText(String.valueOf(binhLuan.getThoiGianBL()));
+        BinhLuan binhLuan = listBL.get(holder.getAdapterPosition());
+        byte[] decodedString = Base64.decode(binhLuan.getHINHANH(), Base64.DEFAULT);
+        Bitmap imgBitMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        holder.img_Hinh_binhluan.setImageBitmap(imgBitMap);
+
+//        Bitmap bitmap = BitmapFactory.decodeByteArray(binhLuan.getHinhBL(),0,binhLuan.getHinhBL().length);
+//        holder.img_Hinh_binhluan.setImageBitmap(bitmap);
+
+
+        holder.txt_NoiDung_binhluan.setText(binhLuan.getNOIDUNG());
+        holder.txtV_ThoiGian_binhluan.setText(String.valueOf(binhLuan.getTHOIGIAN()));
     }
 
     @Override

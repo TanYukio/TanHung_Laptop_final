@@ -14,6 +14,13 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.Retrofit.API;
+import com.example.tanhung_laptop.Retrofit.RetrofitClient;
+import com.example.tanhung_laptop.Retrofit.Utils;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class GopY_Fragment extends Fragment {
@@ -21,6 +28,7 @@ public class GopY_Fragment extends Fragment {
     ImageButton ibtn_Exit;
     EditText edt_Tentaikhoan, edt_Sdt, edt_NoiDunggopy;
     Button btn_Gopy, btn_Thoat;
+    CompositeDisposable compositeDisposable;
     public GopY_Fragment() {
 
     }
@@ -61,12 +69,21 @@ public class GopY_Fragment extends Fragment {
                 }
                 else
                 {
-                    BatDau_activity.database.INSERT_GOPY(
-                            edt_Tentaikhoan.getText().toString().trim(),
-                            Integer.parseInt(edt_Sdt.getText().toString().trim()),
-                            edt_NoiDunggopy.getText().toString().trim()
-                    );
-                    Toast.makeText(getActivity(), "Gửi góp ý thành công !", Toast.LENGTH_LONG).show();
+//
+                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+                    compositeDisposable =  new CompositeDisposable();
+                    compositeDisposable.add(api.gopY(edt_Tentaikhoan.getText().toString().trim(),edt_Sdt.getText().toString().trim(),
+                                    edt_NoiDunggopy.getText().toString().trim())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    messageModel -> {
+                                        if (messageModel.isSuccess()) {
+                                        }
+                                        Toast.makeText(getContext(),messageModel.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }, throwable -> {
+                                        Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }));
                     edt_NoiDunggopy.setText("");
                 }
             }

@@ -3,7 +3,11 @@ package com.example.tanhung_laptop.User;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,12 +16,21 @@ import android.widget.Toast;
 
 import com.example.tanhung_laptop.Models.TAIKHOAN;
 import com.example.tanhung_laptop.R;
+import com.example.tanhung_laptop.Retrofit.API;
+import com.example.tanhung_laptop.Retrofit.RetrofitClient;
+import com.example.tanhung_laptop.Retrofit.Utils;
+
+import java.io.ByteArrayOutputStream;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DangKy_Activity extends AppCompatActivity {
     EditText edtTaikhoan,edtMatkhau,edtnhaplai_matkhau,edtsdt,edtemail;
     Button btnDangky;
     ImageView img_quaylai_dangky;
-
+    CompositeDisposable compositeDisposable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,20 +52,47 @@ public class DangKy_Activity extends AppCompatActivity {
                     Toast.makeText(DangKy_Activity.this, "email không hợp lệ ", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    TAIKHOAN taiKhoan = new TAIKHOAN();
-                    taiKhoan.setTENTAIKHOAN(edtTaikhoan.getText().toString());
-                    taiKhoan.setMATKHAU(edtMatkhau.getText().toString());
-                    taiKhoan.setSDT(Integer.valueOf(edtsdt.getText().toString()));
-                    taiKhoan.setEMAIL(edtemail.getText().toString());
+                    BitmapDrawable bitmapDrawable = (BitmapDrawable) getDrawable(R.drawable.person);
+                    Bitmap bitmap = bitmapDrawable.getBitmap();
 
-                    long kiemtra = BatDau_activity.database.themtaikhoan(taiKhoan);
-                    if (kiemtra != 0){
-                        Toast.makeText(DangKy_Activity.this, "Thêm thành công !", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(DangKy_Activity.this, DangNhap_Activity.class);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(DangKy_Activity.this, "Thêm thất bại !", Toast.LENGTH_LONG).show();
-                    }
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); // bm is the bitmap object
+                    byte[] b = baos.toByteArray();
+
+                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+
+                    String tentaikhoan = edtTaikhoan.getText().toString();
+                    String matkhau = edtMatkhau.getText().toString();
+                    String sdt = edtsdt.getText().toString();
+                    String email = edtemail.getText().toString();
+                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+                    compositeDisposable =  new CompositeDisposable();
+                    compositeDisposable.add(api.dangKi(tentaikhoan, matkhau, sdt, email, 1,encodedImage)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    messageModel -> {
+                                        if (messageModel.isSuccess())
+                                        {
+                                            Intent intent = new Intent(DangKy_Activity.this, DangNhap_Activity.class);
+                                            startActivity(intent);
+                                        }
+                                        // Đều xuất thông báo khi thành công lẫn thất bại
+                                        Toast.makeText(getApplicationContext(), messageModel.getMessage(), Toast.LENGTH_LONG).show();
+                                    }, throwable -> {
+                                        Log.e("Lỗi", throwable.getMessage());
+                                        Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }));
+
+//                    long kiemtra = BatDau_activity.database.themtaikhoan(taiKhoan);
+//                    if (kiemtra != 0){
+//                        Toast.makeText(DangKy_Activity.this, "Thêm thành công !", Toast.LENGTH_LONG).show();
+//                        Intent intent = new Intent(DangKy_Activity.this, DangNhap_Activity.class);
+//                        startActivity(intent);
+//                    } else {
+//                        Toast.makeText(DangKy_Activity.this, "Thêm thất bại !", Toast.LENGTH_LONG).show();
+//                    }
                 }
             }
         });
