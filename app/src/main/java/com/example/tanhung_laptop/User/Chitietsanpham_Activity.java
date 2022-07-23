@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -44,12 +45,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class Chitietsanpham_Activity extends AppCompatActivity {
 
     LAPTOP laptop;
-    TextView name,price,noidung_ctsp;
+    TextView name, price, noidung_ctsp;
     ImageView imgHinh;
     EditText editTextSL;
-    Button btnaddcart,btn_GuiBl;
+    Button btnaddcart, btn_GuiBl;
     ImageButton btn_quaylai;
-    int id,idtk;
+    int id, idtk;
     NestedScrollView scrollV;
     RecyclerView recV_chatbox;
     ArrayList<BinhLuan> listBL;
@@ -62,8 +63,8 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chitietsanpham);
         Intent intent = getIntent();
-        id = intent.getIntExtra("id",1);
-        idtk = intent.getIntExtra("idtk",2);
+        id = intent.getIntExtra("id", 1);
+        idtk = intent.getIntExtra("idtk", 2);
         Anhxa();
         Sukien();
         GetDataSP();
@@ -85,45 +86,40 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
 
 
                 int SL = Integer.parseInt(editTextSL.getText().toString());
-                if(idtk==2){
+                if (idtk == 2) {
                     laptop = LAPTOP_ADAPTER.laptopList.get(id);
-                }else
-                {
+                } else {
                     laptop = TimKiemAdapter.laptopList.get(idtk);
                 }
 
 
-                if(DangNhap_Activity.taikhoan.getIDTAIKHOAN() == -1)
-                {
+                if (DangNhap_Activity.taikhoan.getIDTAIKHOAN() == -1) {
                     Toast.makeText(Chitietsanpham_Activity.this, "Bạn phải đăng nhập để mua hàng !", Toast.LENGTH_SHORT).show();
-                }else if(  laptop.getSOLUONG() == 1 ){
-                    Toast.makeText(Chitietsanpham_Activity.this, " Sản phẩm hiện đã hết hàng !  " , Toast.LENGTH_SHORT).show();
+                } else if (laptop.getSOLUONG() == 1) {
+                    Toast.makeText(Chitietsanpham_Activity.this, " Sản phẩm hiện đã hết hàng !  ", Toast.LENGTH_SHORT).show();
 
-                }else if( SL > (laptop.getSOLUONG() - 1) ){
-                    Toast.makeText(Chitietsanpham_Activity.this, "Hàng trong kho chỉ còn : " + (laptop.getSOLUONG()- 1) + " sản phẩm ", Toast.LENGTH_SHORT).show();
+                } else if (SL > (laptop.getSOLUONG() - 1)) {
+                    Toast.makeText(Chitietsanpham_Activity.this, "Hàng trong kho chỉ còn : " + (laptop.getSOLUONG() - 1) + " sản phẩm ", Toast.LENGTH_SHORT).show();
 
-                }else if(  SL == 0 ){
-                    Toast.makeText(Chitietsanpham_Activity.this, " Số lượng không hợp lệ !  " , Toast.LENGTH_SHORT).show();
+                } else if (SL == 0) {
+                    Toast.makeText(Chitietsanpham_Activity.this, " Số lượng không hợp lệ !  ", Toast.LENGTH_SHORT).show();
 
-                }
-                else if(  SL > 5 ){
-                    Toast.makeText(Chitietsanpham_Activity.this, " Mỗi lần chỉ mua được 4 sản phẩm !  " , Toast.LENGTH_SHORT).show();
+                } else if (SL > 5) {
+                    Toast.makeText(Chitietsanpham_Activity.this, " Mỗi lần chỉ mua được 4 sản phẩm !  ", Toast.LENGTH_SHORT).show();
 
-                }
-                else
-                {
+                } else {
                     API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-                    compositeDisposable =  new CompositeDisposable();
+                    compositeDisposable = new CompositeDisposable();
                     compositeDisposable.add(api.themspgh(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),
-                                    laptop.getIDLT(),
-                                    laptop.getTENLAPTOP(),
-                                    SL ,
-                                    SL * laptop.getGIASP())
+                            laptop.getIDLT(),
+                            laptop.getTENLAPTOP(),
+                            SL,
+                            SL * laptop.getGIASP())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     laptopModel -> {
-                                        if (laptopModel.isSuccess()){
+                                        if (laptopModel.isSuccess()) {
                                             Intent intent = new Intent(Chitietsanpham_Activity.this, MainActivity.class);
                                             intent.putExtra("giohang", R.id.giohang);
                                             startActivity(intent);
@@ -138,11 +134,12 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
             }
         });
     }
+
     private void Sukien() {
         edt_noidungbl_sanpham.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                scrollV.scrollTo(0,edt_noidungbl_sanpham.getScrollY());
+                scrollV.scrollTo(0, edt_noidungbl_sanpham.getScrollY());
             }
         });
         btn_GuiBl.setOnClickListener(new View.OnClickListener() {
@@ -151,32 +148,32 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
                 if (DangNhap_Activity.taikhoan.getIDTAIKHOAN() == -1) {
                     Toast.makeText(Chitietsanpham_Activity.this, "Bạn chưa đăng nhập !", Toast.LENGTH_LONG).show();
                 } else {
-                    if (edt_noidungbl_sanpham.getText().length() > 0); {
+                    if (!TextUtils.isEmpty(edt_noidungbl_sanpham.getText().toString())) {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
                         String currentDateandTime = sdf.format(new Date());
-                        if(idtk==2){
+                        if (idtk == 2) {
                             laptop = LAPTOP_ADAPTER.laptopList.get(id);
-                        }else
-                        {
+                        } else {
                             laptop = TimKiemAdapter.laptopList.get(idtk);
                         }
                         laptop = LAPTOP_ADAPTER.laptopList.get(id);
 //                        BatDau_activity.database.ThemBL(DangNhap_Activity.taikhoan.getIDTAIKHOAN(), laptop.getIDLT(),edt_noidungbl_sanpham.getText().toString(),currentDateandTime);
 
                         API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-                        compositeDisposable =  new CompositeDisposable();
+                        compositeDisposable = new CompositeDisposable();
                         compositeDisposable.add(api.thembl(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),
-                                        laptop.getIDLT(),currentDateandTime,edt_noidungbl_sanpham.getText().toString())
+                                laptop.getIDLT(), currentDateandTime, edt_noidungbl_sanpham.getText().toString())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(
                                         messageModel -> {
-                                            if (messageModel.isSuccess())
-                                            {
+                                            if (messageModel.isSuccess()) {
                                                 listBL.add(0, new BinhLuan(
-                                                        DangNhap_Activity.taikhoan.getIDTAIKHOAN(),DangNhap_Activity.taikhoan.getHINHANH(),
-                                                        edt_noidungbl_sanpham.getText().toString(),currentDateandTime
+                                                        DangNhap_Activity.taikhoan.getIDTAIKHOAN(), DangNhap_Activity.taikhoan.getHINHANH(), currentDateandTime,
+                                                        edt_noidungbl_sanpham.getText().toString()
                                                 ));
+                                                binhLuanAdapter.notifyItemInserted(0);
+                                                edt_noidungbl_sanpham.setText("");
                                             }
                                             // Đều xuất thông báo khi thành công lẫn thất bại
                                             Toast.makeText(getApplicationContext(), messageModel.getMessage(), Toast.LENGTH_LONG).show();
@@ -184,11 +181,8 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
                                             Log.e("Lỗi", throwable.getMessage());
                                             Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                         }));
-
-                        Log.e("Tag",String.valueOf(listBL.size()));
-                        binhLuanAdapter.notifyItemInserted(0);
-                        edt_noidungbl_sanpham.setText("");
-                        Toast.makeText(Chitietsanpham_Activity.this, " Bình luận thành công ", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Chitietsanpham_Activity.this, "Bạn chưa nhập bình luận", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -199,11 +193,11 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
     private void Anhxa() {
         edt_noidungbl_sanpham = findViewById(R.id.edt_noidungbl_sanpham);
         noidung_ctsp = findViewById(R.id.noidung_ctsp);
-        scrollV =(NestedScrollView) findViewById(R.id.scrollV);
+        scrollV = (NestedScrollView) findViewById(R.id.scrollV);
         name = (TextView) findViewById(R.id.product_name_CT);
         price = (TextView) findViewById(R.id.product_price_CT);
         imgHinh = (ImageView) findViewById(R.id.product_image_CT);
-        btnaddcart= (Button) findViewById(R.id.btnadd_addtocart_CT);
+        btnaddcart = (Button) findViewById(R.id.btnadd_addtocart_CT);
         editTextSL = (EditText) findViewById(R.id.product_SL_CT);
         btn_quaylai = (ImageButton) findViewById(R.id.btn_quaylai);
         btn_GuiBl = findViewById(R.id.btn_GuiBl);
@@ -211,10 +205,9 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
     }
 
     private void GetDataSP() {
-        if(idtk==2){
+        if (idtk == 2) {
             laptop = LAPTOP_ADAPTER.laptopList.get(id);
-        }else
-        {
+        } else {
             laptop = TimKiemAdapter.laptopList.get(idtk);
         }
         //get data
@@ -236,20 +229,20 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
 
 
     }
+
     @Override
     protected void onStart() {
 
-                if(idtk==2){
+        if (idtk == 2) {
             laptop = LAPTOP_ADAPTER.laptopList.get(id);
-        }else
-        {
+        } else {
             laptop = TimKiemAdapter.laptopList.get(idtk);
         }
 //        listBL = BatDau_activity.database.LayBinhLuan(laptop.getIDLT());
         listBL = new ArrayList<>();
 
         API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
+        compositeDisposable = new CompositeDisposable();
         compositeDisposable.add(api.layBl(laptop.getIDLT())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -258,10 +251,10 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
                             listBL.clear();
                             if (binhluanModel.isSuccess()) {
 //                                Log.e("1",laptopModel.getResult().get(0).getTENLAPTOP());
-                                for (int i= 0;i<binhluanModel.getResult().size();i++){
+                                for (int i = 0; i < binhluanModel.getResult().size(); i++) {
                                     listBL.add(binhluanModel.getResult().get(i));
                                 }
-                                Log.e("Binh Luan", "onStart: " + listBL.size() );
+                                Log.e("Binh Luan", "onStart: " + listBL.size());
 //                                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
 //                                Log.e("đâ", laptopArrayList.size() + "");
                             }
@@ -274,7 +267,7 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
 
         binhLuanAdapter = new BinhLuanAdapter(listBL);
         recV_chatbox.setAdapter(binhLuanAdapter);
-        recV_chatbox.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        recV_chatbox.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         super.onStart();
     }
 

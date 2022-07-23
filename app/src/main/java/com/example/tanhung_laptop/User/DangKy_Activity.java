@@ -45,9 +45,12 @@ public class DangKy_Activity extends AppCompatActivity {
                     Toast.makeText(DangKy_Activity.this, "Vui lòng nhập thông tin tài khoản !", Toast.LENGTH_LONG).show();
                 } else if (edtMatkhau.getText().toString() == null || edtMatkhau.getText().toString().equals("")) {
                     Toast.makeText(DangKy_Activity.this, "Vui lòng nhập mật khẩu !", Toast.LENGTH_SHORT).show();
+                } else if ( !edtMatkhau.getText().toString().equals( edtnhaplai_matkhau.getText().toString()) ) {
+                    Toast.makeText(DangKy_Activity.this, "Nhập lại mật khẩu không trùng với mật khẩu !", Toast.LENGTH_SHORT).show();
                 } else if (String.valueOf(edtsdt.getText().toString()).length() != 10) {
                     Toast.makeText(DangKy_Activity.this, "Số điện thoại không hợp lệ !", Toast.LENGTH_SHORT).show();
                 }
+
                 else if (isEmailValid(edtemail.getText().toString())== false) {
                     Toast.makeText(DangKy_Activity.this, "email không hợp lệ ", Toast.LENGTH_SHORT).show();
                 }
