@@ -57,6 +57,7 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
     BinhLuanAdapter binhLuanAdapter;
     EditText edt_noidungbl_sanpham;
     CompositeDisposable compositeDisposable;
+    API api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,9 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
         id = intent.getIntExtra("id", 1);
         idtk = intent.getIntExtra("idtk", 2);
         Anhxa();
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable = new CompositeDisposable();
+
         Sukien();
         GetDataSP();
         btn_quaylai.setOnClickListener(new View.OnClickListener() {
@@ -78,20 +82,12 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
         btnaddcart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                BitmapDrawable bitmapDrawable = (BitmapDrawable) imgHinh.getDrawable();
-//                Bitmap bitmap = bitmapDrawable.getBitmap();
-//                ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-//                bitmap.compress(Bitmap.CompressFormat.PNG,100,byteArray);
-//                byte[] hinhAnh = byteArray.toByteArray();
-
-
                 int SL = Integer.parseInt(editTextSL.getText().toString());
                 if (idtk == 2) {
                     laptop = LAPTOP_ADAPTER.laptopList.get(id);
                 } else {
                     laptop = TimKiemAdapter.laptopList.get(idtk);
                 }
-
 
                 if (DangNhap_Activity.taikhoan.getIDTAIKHOAN() == -1) {
                     Toast.makeText(Chitietsanpham_Activity.this, "Bạn phải đăng nhập để mua hàng !", Toast.LENGTH_SHORT).show();
@@ -108,8 +104,7 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
                     Toast.makeText(Chitietsanpham_Activity.this, " Mỗi lần chỉ mua được 4 sản phẩm !  ", Toast.LENGTH_SHORT).show();
 
                 } else {
-                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-                    compositeDisposable = new CompositeDisposable();
+
                     compositeDisposable.add(api.themspgh(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),
                             laptop.getIDLT(),
                             laptop.getTENLAPTOP(),
@@ -157,10 +152,7 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
                             laptop = TimKiemAdapter.laptopList.get(idtk);
                         }
                         laptop = LAPTOP_ADAPTER.laptopList.get(id);
-//                        BatDau_activity.database.ThemBL(DangNhap_Activity.taikhoan.getIDTAIKHOAN(), laptop.getIDLT(),edt_noidungbl_sanpham.getText().toString(),currentDateandTime);
 
-                        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-                        compositeDisposable = new CompositeDisposable();
                         compositeDisposable.add(api.thembl(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),
                                 laptop.getIDLT(), currentDateandTime, edt_noidungbl_sanpham.getText().toString())
                                 .subscribeOn(Schedulers.io())
@@ -175,10 +167,8 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
                                                 binhLuanAdapter.notifyItemInserted(0);
                                                 edt_noidungbl_sanpham.setText("");
                                             }
-                                            // Đều xuất thông báo khi thành công lẫn thất bại
                                             Toast.makeText(getApplicationContext(), messageModel.getMessage(), Toast.LENGTH_LONG).show();
                                         }, throwable -> {
-                                            Log.e("Lỗi", throwable.getMessage());
                                             Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                         }));
                     } else {
@@ -212,22 +202,14 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
         }
         //get data
         String ten = laptop.getTENLAPTOP();
-//        String mota = sanPham.getMotaSP();
         name.setText(ten);
-//        content.setText(mota);
         noidung_ctsp.setText(laptop.getMOTASP());
-        price.setText(String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(laptop.getGIASP()) + " VNĐ"));
+        price.setText(NumberFormat.getNumberInstance(Locale.US).format(laptop.getGIASP() + " VNĐ"));
 
 
         byte[] decodedString = Base64.decode(laptop.getHINHANH(), Base64.DEFAULT);
         Bitmap imgBitMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         imgHinh.setImageBitmap(imgBitMap);
-
-//        byte[] hinhAnh = laptop.getHINHANH();
-//        Bitmap bitmap = BitmapFactory.decodeByteArray(hinhAnh,0,hinhAnh.length);
-//        imgHinh.setImageBitmap(bitmap);
-
-
     }
 
     @Override
@@ -238,11 +220,8 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
         } else {
             laptop = TimKiemAdapter.laptopList.get(idtk);
         }
-//        listBL = BatDau_activity.database.LayBinhLuan(laptop.getIDLT());
         listBL = new ArrayList<>();
 
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable = new CompositeDisposable();
         compositeDisposable.add(api.layBl(laptop.getIDLT())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -250,17 +229,12 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
                         binhluanModel -> {
                             listBL.clear();
                             if (binhluanModel.isSuccess()) {
-//                                Log.e("1",laptopModel.getResult().get(0).getTENLAPTOP());
                                 for (int i = 0; i < binhluanModel.getResult().size(); i++) {
                                     listBL.add(binhluanModel.getResult().get(i));
                                 }
-                                Log.e("Binh Luan", "onStart: " + listBL.size());
-//                                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
-//                                Log.e("đâ", laptopArrayList.size() + "");
                             }
                             binhLuanAdapter.notifyDataSetChanged();
                         }, throwable -> {
-//                            Log.e("Lỗi", throwable.getMessage());
                             Toast.makeText(Chitietsanpham_Activity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
 

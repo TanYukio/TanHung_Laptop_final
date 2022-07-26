@@ -47,44 +47,8 @@ public class HomeAdmin_Activity extends AppCompatActivity implements NavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_admin);
 
-
         anh_xa();
         ActionBar();
-
-    }
-
-    private TAIKHOAN laythongtin(int idtk) {
-
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
-        compositeDisposable.add(api.thongTinTaiKhoan(idtk)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        taiKhoanModel -> {
-                            if (taiKhoanModel.isSuccess()) {
-//
-                            }
-                        }, throwable -> {
-//                            Log.e("Lỗi", throwable.getMessage());
-                            Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        }));
-
-//        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM TAIKHOAN WHERE IDTAIKHOAN = " + idtk);
-//        while (cursor.moveToNext()) {
-//            return new TAIKHOAN(
-//                    cursor.getInt(0),
-//                    cursor.getString(1),
-//                    cursor.getString(2),
-//                    cursor.getInt(3),
-//                    cursor.getString(4),
-//                    cursor.getString(5),
-//                    cursor.getInt(6),
-//                    cursor.getString(7),
-//                    cursor.getString(8)
-//            );
-//        }
-        return null;
 
     }
 
@@ -95,12 +59,6 @@ public class HomeAdmin_Activity extends AppCompatActivity implements NavigationV
         toolbar = findViewById(R.id.toolbar);
         edt_timkiem = findViewById(R.id.edt_timkiem);
         edt_timkiem.setEnabled(true);
-
-
-
-
-
-
 
         navigationeview_home.setNavigationItemSelectedListener(this);
         navigationeview_home.setCheckedItem(R.id.nav_HomeAdmin);

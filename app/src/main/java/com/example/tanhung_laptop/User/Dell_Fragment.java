@@ -35,10 +35,12 @@ public class Dell_Fragment extends Fragment {
     LAPTOP_ADAPTER adapter;
     TextView tieude;
     CompositeDisposable compositeDisposable;
+    API api;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
     }
 
     @Override
@@ -54,8 +56,6 @@ public class Dell_Fragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), Chitietsanpham_Activity.class);
-
-
                 intent.putExtra("id",i);
                 startActivity(intent);
 
@@ -68,25 +68,20 @@ public class Dell_Fragment extends Fragment {
     }
 
     private void GetData() {
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
+
         compositeDisposable.add(api.laySpnsx(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         laptopModel -> {
                             if (laptopModel.isSuccess()) {
-
                                 laptopArrayList.clear();
                                 for (int i= 0;i<laptopModel.getResult().size();i++){
                                     laptopArrayList.add(laptopModel.getResult().get(i));
                                 }
-//                                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
-//                                Log.e("đâ", laptopArrayList.size() + "");
                                 adapter.notifyDataSetChanged();
                             }
                         }, throwable -> {
-//                            Log.e("Lỗi", throwable.getMessage());
                             Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
 

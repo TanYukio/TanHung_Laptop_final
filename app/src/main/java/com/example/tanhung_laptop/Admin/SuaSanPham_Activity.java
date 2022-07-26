@@ -82,7 +82,6 @@ public class SuaSanPham_Activity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-
                 tendanhmuc = categoryAdapter.getItem(position).getName();
                 edtDanhMuc.setText(categoryAdapter.getItem(position).getIDcategory()+"");
             }
@@ -127,7 +126,7 @@ public class SuaSanPham_Activity extends AppCompatActivity {
                                     Toast.makeText(SuaSanPham_Activity.this, messageModel.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                                 , throwable -> {
-                                    Log.e("Lỗi Sửa",throwable.getMessage() );
+                                    //Log.e("Lỗi Sửa",throwable.getMessage() );
                                     Toast.makeText(SuaSanPham_Activity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                         )
@@ -176,7 +175,7 @@ public class SuaSanPham_Activity extends AppCompatActivity {
     private void Getdata() {
         laptop = LaptopAdminAdapter.laptopList.get(id);
         MASP = laptop.getIDLT();
-        Log.e("TAG", "Getdata: " + MASP );
+        //Log.e("TAG", "Getdata: " + MASP );
         editTen.setText(laptop.getTENLAPTOP());
         edt_GiaSP.setText(String.valueOf(laptop.getGIASP()));
         edtDanhMuc.setText(String.valueOf(laptop.getIDNSX()));
@@ -187,9 +186,6 @@ public class SuaSanPham_Activity extends AppCompatActivity {
         byte[] decodedString = Base64.decode(laptop.getHINHANH(), Base64.DEFAULT);
         Bitmap imgBitMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         imgHinh.setImageBitmap(imgBitMap);
-//        byte[] hinhAnh = laptop.getHINHANH();
-//        Bitmap bitmap = BitmapFactory.decodeByteArray(hinhAnh,0,hinhAnh.length);
-//        imgHinh.setImageBitmap(bitmap);
     }
 
     @Override

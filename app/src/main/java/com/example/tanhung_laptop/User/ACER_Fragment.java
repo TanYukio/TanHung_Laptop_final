@@ -38,11 +38,12 @@ public class ACER_Fragment extends Fragment {
     LAPTOP_ADAPTER adapter;
     TextView tieude;
     CompositeDisposable compositeDisposable;
-
+    API api;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
@@ -58,22 +59,17 @@ public class ACER_Fragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), Chitietsanpham_Activity.class);
-
-
-                intent.putExtra("id",i);
+                intent.putExtra("id", i);
                 startActivity(intent);
-
             }
         });
         registerForContextMenu(gridviewSanPham);
 
         GetData();
-        return  view;
+        return view;
     }
 
     private void GetData() {
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
         compositeDisposable.add(api.laySpnsx(5)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -81,19 +77,16 @@ public class ACER_Fragment extends Fragment {
                         laptopModel -> {
                             laptopArrayList.clear();
                             if (laptopModel.isSuccess()) {
-
-
-                                for (int i= 0;i<laptopModel.getResult().size();i++){
+                                for (int i = 0; i < laptopModel.getResult().size(); i++) {
                                     laptopArrayList.add(laptopModel.getResult().get(i));
                                 }
-                                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
-
+                            } else {
+                                Toast.makeText(getContext(), laptopModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                             adapter.notifyDataSetChanged();
                         }, throwable -> {
                             Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
-
     }
 
     private void anh_xa() {

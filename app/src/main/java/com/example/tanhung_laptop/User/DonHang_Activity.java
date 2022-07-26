@@ -38,12 +38,15 @@ public class DonHang_Activity extends AppCompatActivity {
     ImageButton ibtnExit_lichsu;
     LinearLayout layoutdoanhthu;
     CompositeDisposable compositeDisposable;
+    API api;
     int idcthd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_don_hang);
         AnhXa();
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
         Listview_Lichsu = (ListView) findViewById(R.id.listview_danhsachhoadon_lichsu);
 
         hoaDonArrayList = new ArrayList<>();
@@ -95,24 +98,16 @@ public class DonHang_Activity extends AppCompatActivity {
 
     private void layhoadon() {
 
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
         compositeDisposable.add(api.layHd(DangNhap_Activity.taikhoan.getIDTAIKHOAN())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         hoadonModel -> {
-
                             hoaDonArrayList.clear();
                             if (hoadonModel.isSuccess()) {
-//                                Log.e("1",laptopModel.getResult().get(0).getTENLAPTOP());
-
                                 for (int i= 0;i<hoadonModel.getResult().size();i++){
                                     hoaDonArrayList.add(hoadonModel.getResult().get(i));
                                 }
-//                                Toast.makeText(this, "Thành công", Toast.LENGTH_LONG).show();
-//                                Log.e("đâ", laptopArrayList.size() + "");
-
                             }
                             adapter.notifyDataSetChanged();
                             if (DangNhap_Activity.taikhoan.getIDTAIKHOAN() == -1)
@@ -122,15 +117,12 @@ public class DonHang_Activity extends AppCompatActivity {
                                 txtthongbao.setText(" Bạn chưa có hóa đơn !");
                             }
                         }, throwable -> {
-//                            Log.e("Lỗi", throwable.getMessage());
                             Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
     }
 
     private void laytongtienhd()
     {
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
         compositeDisposable.add(api.laytongtienhd(DangNhap_Activity.taikhoan.getIDTAIKHOAN())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -138,14 +130,11 @@ public class DonHang_Activity extends AppCompatActivity {
                         integerModel -> {
                             if (integerModel.isSuccess())
                             {
-                                tongtien_HD.setText(String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(integerModel.getResult()) + " VNĐ"));
-
+                                tongtien_HD.setText(NumberFormat.getNumberInstance(Locale.US).format(integerModel.getResult()+ " VNĐ"));
                             }
-//                            Toast.makeText(this, " lay tong tien hoa don", Toast.LENGTH_SHORT).show();
 
                         }, throwable -> {
-//                            Toast.makeText(DonHang_Activity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                            Log.e(" tổng chi ", "" + throwable.getMessage());
+                            Toast.makeText(DonHang_Activity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
     }
 }

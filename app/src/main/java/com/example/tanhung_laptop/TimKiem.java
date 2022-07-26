@@ -40,6 +40,7 @@ public class TimKiem extends AppCompatActivity {
     ArrayList<LAPTOP> laptopArrayList;
     TimKiemAdapter adapter;
     CompositeDisposable compositeDisposable;
+    API api ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,9 @@ public class TimKiem extends AppCompatActivity {
         listview_tk = findViewById(R.id.listview_tk);
         laptopArrayList = new ArrayList<>();
         Anhxa();
+        compositeDisposable = new CompositeDisposable();
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+
         adapter = new TimKiemAdapter(TimKiem.this, R.layout.timkiem, laptopArrayList);
         listview_tk.setAdapter(adapter);
         listview_tk.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -61,7 +65,7 @@ public class TimKiem extends AppCompatActivity {
         edt_tk.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                GetDataALL();
+
             }
 
             @Override
@@ -113,8 +117,6 @@ public class TimKiem extends AppCompatActivity {
 
     private void GetData(String ten) {
         //get data
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
         compositeDisposable.add(api.TimKiem(ten)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -122,41 +124,16 @@ public class TimKiem extends AppCompatActivity {
                         laptopModel -> {
                             laptopArrayList.clear();
                             if (laptopModel.isSuccess()) {
-
-
                                 for (int i= 0;i<laptopModel.getResult().size();i++){
                                     laptopArrayList.add(laptopModel.getResult().get(i));
                                 }
-
                             }
                             adapter.notifyDataSetChanged();
-//                            Toast.makeText(TimKiem.this, laptopModel.getMessage(), Toast.LENGTH_LONG).show();
                         }, throwable -> {
                             Toast.makeText(TimKiem.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
 
 
-    }
-    private void GetDataALL() {
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
-        compositeDisposable.add(api.layhetSp()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        laptopModel -> {
-                            laptopArrayList.clear();
-                            if (laptopModel.isSuccess()) {
-                                for (int i= 0;i<laptopModel.getResult().size();i++){
-                                    laptopArrayList.add(laptopModel.getResult().get(i));
-                                }
-
-                            }
-                            adapter.notifyDataSetChanged();
-//                            Toast.makeText(TimKiem.this, laptopModel.getMessage(), Toast.LENGTH_LONG).show();
-                        }, throwable -> {
-                            Toast.makeText(TimKiem.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        }));
     }
 
     private void Anhxa() {

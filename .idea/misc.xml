@@ -51,6 +51,10 @@
         <entry key="..\:/Android_TanHung_Laptop/app/src/main/res/menu/menu_list.xml" value="0.25416666666666665" />
         <entry key="..\:/Work/AndroidStudio/TanHung/app/src/main/res/layout/activity_dang_ky.xml" value="0.25" />
         <entry key="..\:/Work/AndroidStudio/TanHung/app/src/main/res/layout/activity_sua_san_pham.xml" value="0.10989583333333333" />
+        <entry key="..\:/Work/AndroidStudio/TanHung/app/src/main/res/layout/activity_thanh_toan.xml" value="0.25" />
+        <entry key="..\:/Work/AndroidStudio/TanHung/app/src/main/res/layout/activity_them_san_pham.xml" value="0.25" />
+        <entry key="..\:/Work/AndroidStudio/TanHung/app/src/main/res/layout/dialog_thanhtoan.xml" value="0.25" />
+        <entry key="..\:/Work/AndroidStudio/TanHung/app/src/main/res/layout/fragment_gio_hang.xml" value="0.25" />
       </map>
     </option>
   </component>

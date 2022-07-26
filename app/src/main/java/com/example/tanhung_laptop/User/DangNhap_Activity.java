@@ -68,7 +68,6 @@ public class DangNhap_Activity extends AppCompatActivity {
                                             Toast.makeText(getApplicationContext(), "Sai tài khoản hoặc mật khẩu!", Toast.LENGTH_LONG).show();
 
                                         }
-                                        Toast.makeText(getApplicationContext(), taikhoanModel.getMessage(), Toast.LENGTH_LONG).show();
                                     }, throwable -> {
                                         Toast.makeText(getApplicationContext()," Lỗi:" +  throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                     }));

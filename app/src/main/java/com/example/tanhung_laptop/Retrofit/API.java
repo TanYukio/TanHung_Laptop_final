@@ -6,6 +6,7 @@ import com.example.tanhung_laptop.ModelsPHP.GiohangModel;
 import com.example.tanhung_laptop.ModelsPHP.GopyModel;
 import com.example.tanhung_laptop.ModelsPHP.HoadonModel;
 import com.example.tanhung_laptop.ModelsPHP.DoubleModel;
+import com.example.tanhung_laptop.ModelsPHP.IntegerModel;
 import com.example.tanhung_laptop.ModelsPHP.LaptopModel;
 import com.example.tanhung_laptop.ModelsPHP.MessageModel;
 import com.example.tanhung_laptop.ModelsPHP.StringModel;
@@ -28,6 +29,10 @@ public interface API {
 
     @GET("layspmoi.php")
     Observable<LaptopModel> layspmoi();
+
+
+    @GET("layidhd.php")
+    Observable<IntegerModel> layidhd();
 
     @GET("layhetgopy.php")
     Observable<GopyModel> layhetGopy();
@@ -273,8 +278,11 @@ public interface API {
             @Field("thoigian") String thoigian,
             @Field("tongtien") double tongtien,
             @Field("ghichu") String ghichu,
-            @Field("diachi") String diachi
+            @Field("diachi") String diachi,
+            @Field("momo") String momo
     );
+
+
 
     @POST("themcthd.php")
     @FormUrlEncoded

@@ -50,6 +50,7 @@ public class HoaDon_Activity extends AppCompatActivity {
     ImageButton ibtnExit_lichsu;
     CompositeDisposable compositeDisposable;
     API api;
+
     int idcthd;
 
     @Override
@@ -135,14 +136,10 @@ public class HoaDon_Activity extends AppCompatActivity {
                         integerModel -> {
                             if (integerModel.isSuccess()) {
                                 tongtien_HD.setText(String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(integerModel.getResult()) + " VNĐ"));
-
-//                                Toast.makeText(HoaDon_Activity.this, "Tổng tiền : " + String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(integerModel.getResult()) + " VNĐ"), Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(this, integerModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-
                         }, throwable -> {
-                            Log.e("Lỗi tiền 1 " , throwable.getMessage());
                             Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
 
@@ -161,7 +158,7 @@ public class HoaDon_Activity extends AppCompatActivity {
                                 Toast.makeText(this, integerModel.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }, throwable -> {
-                            Log.e("Lỗi tiền " + Danhmuc  , throwable.getMessage());
+                            //Log.e("Lỗi tiền " + Danhmuc  , throwable.getMessage());
                             Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
 
@@ -180,13 +177,10 @@ public class HoaDon_Activity extends AppCompatActivity {
                                 for (int i = 0; i < hoadonModel.getResult().size(); i++) {
                                     hoaDonArrayList.add(hoadonModel.getResult().get(i));
                                 }
-//                                Toast.makeText(getApplicationContext(), "Thành công", Toast.LENGTH_LONG).show();
                             }
                             adapter.notifyDataSetChanged();
-
-
                         }, throwable -> {
-                            Log.e("Lỗi 1  " , throwable.getMessage());
+                            //Log.e("Lỗi 1  " , throwable.getMessage());
                             Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
 
@@ -202,15 +196,12 @@ public class HoaDon_Activity extends AppCompatActivity {
                             if (theLoaiModel.isSuccess()) {
                                 for (int i = 0; i < theLoaiModel.getResult().size(); i++) {
                                     list.add(theLoaiModel.getResult().get(i));
-                                    Log.e("Dữ liệu", theLoaiModel.getResult().get(i).getTENTAIKHOAN() + " / "+ theLoaiModel.getResult().get(i).getIDTAIKHOAN());
                                 }
-//                                Toast.makeText(getApplicationContext(), "Thành công", Toast.LENGTH_LONG).show();
                             }
-                            Log.e("DanhSach",list.size() + "");
+                            //Log.e("DanhSach",list.size() + "");
                             categoryAdapter_dstk.notifyDataSetChanged();
-
                         }, throwable -> {
-                            Log.e("Lỗi 2 " , throwable.getMessage());
+                            //Log.e("Lỗi 2 " , throwable.getMessage());
                             Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
     }

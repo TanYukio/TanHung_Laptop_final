@@ -32,22 +32,26 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class ChiTietDonHang_Activity extends AppCompatActivity {
 
     ListView Listview_Lichsu;
-    ImageView ibtnExit_lichsu,imageHinhlichsu_HD;
-    TextView textviewTongTien_HD,textviewdc_HD,textviewgc_HD;
+    ImageView ibtnExit_lichsu, imageHinhlichsu_HD;
+    TextView textviewTongTien_HD, textviewdc_HD, textviewgc_HD;
     ArrayList<CTHoaDon> cthoaDonArrayList;
     CTHoaDonAdapter adapter;
     CompositeDisposable compositeDisposable;
-    int idcthd,KEYhd;
+    int idcthd, KEYhd;
+    API api;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chi_tiet_don_hang);
 
         Intent intent = getIntent();
-        idcthd = intent.getIntExtra("idcthd",1123);
-        KEYhd = intent.getIntExtra("KEYHD",123);
+        idcthd = intent.getIntExtra("idcthd", 1123);
+        KEYhd = intent.getIntExtra("KEYHD", 123);
 
         AnhXa();
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable = new CompositeDisposable();
         Listview_Lichsu = (ListView) findViewById(R.id.listview_danhsachchitiethoadon_lichsu);
 
         cthoaDonArrayList = new ArrayList<>();
@@ -57,6 +61,7 @@ public class ChiTietDonHang_Activity extends AppCompatActivity {
 
         GetData();
     }
+
     private void AnhXa() {
         textviewgc_HD = findViewById(R.id.textviewgc_HD);
         textviewdc_HD = findViewById(R.id.textviewdc_HD);
@@ -77,31 +82,21 @@ public class ChiTietDonHang_Activity extends AppCompatActivity {
         HoaDon hoaDon = HoaDonAdapter.ListHoaDon.get(KEYhd);
         textviewgc_HD.setText("Ghi chú : " + hoaDon.getGHICHU());
         textviewdc_HD.setText("Địa chỉ : " + hoaDon.getDIACHI());
-        textviewTongTien_HD.setText(String.valueOf(NumberFormat.getNumberInstance(Locale.US).format(hoaDon.getTONGTIEN())) + " VNĐ");
+        textviewTongTien_HD.setText(NumberFormat.getNumberInstance(Locale.US).format(hoaDon.getTONGTIEN()) + " VNĐ");
 
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
-        Log.e("idcthd", "" + idcthd);
         compositeDisposable.add(api.layCthd(idcthd)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         cthoadonModel -> {
-
                             cthoaDonArrayList.clear();
                             if (cthoadonModel.isSuccess()) {
-//                                Log.e("1",laptopModel.getResult().get(0).getTENLAPTOP());
-
-                                for (int i= 0;i<cthoadonModel.getResult().size();i++){
+                                for (int i = 0; i < cthoadonModel.getResult().size(); i++) {
                                     cthoaDonArrayList.add(cthoadonModel.getResult().get(i));
                                 }
-//                                Toast.makeText(this, "Thành công", Toast.LENGTH_LONG).show();
-//                                Log.e("đâ", laptopArrayList.size() + "");
-
                             }
                             adapter.notifyDataSetChanged();
                         }, throwable -> {
-//                            Log.e("Lỗi", throwable.getMessage());
                             Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
     }

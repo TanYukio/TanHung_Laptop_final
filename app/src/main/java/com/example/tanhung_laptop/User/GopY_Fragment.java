@@ -29,6 +29,8 @@ public class GopY_Fragment extends Fragment {
     EditText edt_Tentaikhoan, edt_Sdt, edt_NoiDunggopy;
     Button btn_Gopy, btn_Thoat;
     CompositeDisposable compositeDisposable;
+    API api;
+
     public GopY_Fragment() {
 
     }
@@ -36,7 +38,8 @@ public class GopY_Fragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
     }
 
     @Override
@@ -69,17 +72,12 @@ public class GopY_Fragment extends Fragment {
                 }
                 else
                 {
-//
-                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-                    compositeDisposable =  new CompositeDisposable();
                     compositeDisposable.add(api.gopY(edt_Tentaikhoan.getText().toString().trim(),edt_Sdt.getText().toString().trim(),
                                     edt_NoiDunggopy.getText().toString().trim())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     messageModel -> {
-                                        if (messageModel.isSuccess()) {
-                                        }
                                         Toast.makeText(getContext(),messageModel.getMessage(), Toast.LENGTH_SHORT).show();
                                     }, throwable -> {
                                         Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();

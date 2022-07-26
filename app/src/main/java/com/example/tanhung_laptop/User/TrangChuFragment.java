@@ -35,6 +35,7 @@ public class TrangChuFragment extends Fragment {
     LAPTOP_ADAPTER adapter;
     TextView tieude;
     CompositeDisposable compositeDisposable;
+    API api;
     public TrangChuFragment() {
         // Required empty public constructor
     }
@@ -45,6 +46,8 @@ public class TrangChuFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_trang_chu, container, false);
         anh_xa();
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
         laptopArrayList = new ArrayList<>();
         adapter = new LAPTOP_ADAPTER(TrangChuFragment.this, R.layout.laptop_layout, laptopArrayList);
         gridviewSanPham.setAdapter(adapter);
@@ -53,10 +56,8 @@ public class TrangChuFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), Chitietsanpham_Activity.class);
 
-
                 intent.putExtra("id",i);
                 startActivity(intent);
-
             }
         });
         registerForContextMenu(gridviewSanPham);
@@ -66,44 +67,21 @@ public class TrangChuFragment extends Fragment {
     }
 
     private void GetData() {
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
         compositeDisposable.add(api.layspmoi()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         laptopModel -> {
                             if (laptopModel.isSuccess()) {
-                                Log.e("1",laptopModel.getResult().get(0).getTENLAPTOP());
-
                                 laptopArrayList.clear();
                                 for (int i= 0;i<laptopModel.getResult().size();i++){
                                     laptopArrayList.add(laptopModel.getResult().get(i));
                                 }
-//                                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
-//                                Log.e("đâ", laptopArrayList.size() + "");
                                 adapter.notifyDataSetChanged();
                             }
                         }, throwable -> {
-                            Log.e("Lỗi", throwable.getMessage());
                             Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
-//        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE LTMOI = 1");
-//        laptopArrayList.clear();
-//        while (cursor.moveToNext())
-//        {
-////            laptopArrayList.add(new LAPTOP(
-////                    cursor.getInt(0),
-////                    cursor.getBlob(1),
-////                    cursor.getString(2),
-////                    cursor.getInt(3),
-////                    cursor.getInt(4),
-////                    cursor.getString(5),
-////                    cursor.getInt(6),
-////                    cursor.getInt(7)
-////            ));
-//        }
-//        adapter.notifyDataSetChanged();
     }
 
     private void anh_xa() {

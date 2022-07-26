@@ -1,6 +1,7 @@
 package com.example.tanhung_laptop.User;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -36,11 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         anh_xa();
-
-
 
         ActionBar();
         Intent intent = getIntent();
@@ -51,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-
 
     private void anh_xa() {
         drawerlaout=findViewById(R.id.drawerlaout);

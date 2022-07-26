@@ -55,7 +55,7 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
     boolean checkimage = true,checkimagecam=true;
     int IDTAIKHOAN;
     CompositeDisposable compositeDisposable;
-
+    API api;
     @Override
     protected void onStart() {
 //        GetData();
@@ -67,7 +67,8 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thong_tin_nguoi_dung);
         Anhxa();
-
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
         GetData();
         imageButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +106,6 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
                                     }, throwable -> {
                                         Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                     }));
-//                    BatDau_activity.database.UPDATE_IMAGE_TK(IDTAIKHOAN,hinhAnh);
                     imageButtonCamera.setImageResource(R.drawable.ic_baseline_photo_camera_24);
                     imageButtonFolder.setEnabled(true);
                 }
@@ -150,7 +150,6 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
 
                     imageButtonFolder.setImageResource(R.drawable.folder_open_white);
                     imageButtonCamera.setEnabled(true);
-//                    Toast.makeText(ThongTinNguoiDung_Activity.this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -160,8 +159,6 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
     private void GetData() {
         //get data
         int id = DangNhap_Activity.taikhoan.getIDTAIKHOAN();
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
         compositeDisposable.add(api.thongTinTaiKhoan(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -191,7 +188,6 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
                                 IDTAIKHOAN = taiKhoan.getIDTAIKHOAN();
                             }
                         }, throwable -> {
-//                            Log.e("Lỗi", throwable.getMessage());
                             Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
 
@@ -232,21 +228,16 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
                     btnCapnhat.setText("Cập nhật");
 
                     // PHP cập nhật tài khoản
-//                    BatDau_activity.database.CapNhatTaiKhoan(Integer.parseInt(edtSdt.getText().toString().trim()),
-//                            edtEmail.getText().toString(), edtDiachi.getText().toString());
                     int idtk = DangNhap_Activity.taikhoan.getIDTAIKHOAN();
                     String sdt = edtSdt.getText().toString().trim();
                     String email = edtEmail.getText().toString();
                     String diachi = edtDiachi.getText().toString();
-                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
 
-                    compositeDisposable =  new CompositeDisposable();
                     compositeDisposable.add(api.capnhatthongtin(idtk, sdt, email, "2000-06-10",diachi)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     messageModel -> {
-                                        // Đều xuất thông báo khi thành công lẫn thất bại
                                         Toast.makeText(getApplicationContext(), messageModel.getMessage(), Toast.LENGTH_SHORT).show();
                                     }, throwable -> {
                                         Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
@@ -259,7 +250,6 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
         btnDoimatkhau.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(new Intent(ThongTinNguoiDung_Activity.this, .class));
                 showdialog();
             }
         });
@@ -293,8 +283,6 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
                 }
                 else if (nhapmkmoi.getText().toString().equals(nhaplaimk.getText().toString()))
                 {
-                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-                    compositeDisposable =  new CompositeDisposable();
                     compositeDisposable.add(api.doimatkhau(DangNhap_Activity.taikhoan.getIDTAIKHOAN(),
                                     nhapmkcu.getText().toString(),
                                     nhapmkmoi.getText().toString())
@@ -302,17 +290,12 @@ public class ThongTinNguoiDung_Activity extends AppCompatActivity {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     taiKhoanModel -> {
-                                        if (taiKhoanModel.isSuccess())
-                                        {
-
-                                        }
-                                        else
+                                        if (!taiKhoanModel.isSuccess())
                                         {
                                             showdialog();
                                         }
                                         Toast.makeText(ThongTinNguoiDung_Activity.this, taiKhoanModel.getMessage(), Toast.LENGTH_SHORT).show();
                                     }, throwable -> {
-                                        Log.e("Lỗi", throwable.getMessage());
                                         Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                     }));
                 }else

@@ -31,4 +31,10 @@
         android:inputType="textMultiLine"
         android:hint="Ghi chú"/>
 
+    <Button
+        android:id="@+id/btnMomo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thanh toán Momo" />
+
 </LinearLayout>

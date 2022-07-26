@@ -69,34 +69,17 @@ public class QLGopY_Fragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         gopyModel -> {
+                            gopYArrayList.clear();
                             if (gopyModel.isSuccess()) {
-                                gopYArrayList.clear();
                                 for (int i= 0;i<gopyModel.getResult().size();i++){
                                     gopYArrayList.add(gopyModel.getResult().get(i));
                                 }
-
-                                Toast.makeText(getContext(), gopyModel.getMessage(), Toast.LENGTH_LONG).show();
-//
-                                adapter.notifyDataSetChanged();
                             }
+                            adapter.notifyDataSetChanged();
                         }, throwable -> {
 //                            Log.e("Lỗi", throwable.getMessage());
                             Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
-
-//        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM GOPY ");
-//        gopYArrayList.clear();
-//        while (cursor.moveToNext())
-//        {
-//            gopYArrayList.add(new GopY(
-//                    cursor.getInt(0),
-//                    cursor.getString(1),
-//                    cursor.getInt(2),
-//                    cursor.getString(3)
-//
-//            ));
-//        }
-//        adapter.notifyDataSetChanged();
     }
 
     private void anh_xa() {

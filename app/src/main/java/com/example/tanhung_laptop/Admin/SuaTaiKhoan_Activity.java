@@ -106,19 +106,6 @@ public class SuaTaiKhoan_Activity extends AppCompatActivity {
                                 }
                         )
                 );
-//                BatDau_activity.database.UPDATE_TAIKHOAN(
-//                        MATK,
-//                        edt_TenTaiKhoan_QLTK.getText().toString().trim(),
-//                        edt_MatKhau_QLTK.getText().toString().trim(),
-//                        Integer.parseInt(edt_SDT_QLTK.getText().toString().trim()) ,
-//                        edt_Email_QLTK.getText().toString().trim(),
-//                        edt_NgaySinh_QLTK.getText().toString().trim(),
-//                        Integer.parseInt(edt_LoaiTK_QLTK.getText().toString().trim()),
-//                        edt_DiaChi_QLTK.getText().toString().trim(),
-//                        hinhAnh
-//                );
-//
-//                Toast.makeText(SuaTaiKhoan_Activity.this," Sửa thành công ",Toast.LENGTH_LONG).show();
                 onBackPressed();
 
             }
@@ -244,9 +231,6 @@ public class SuaTaiKhoan_Activity extends AppCompatActivity {
         }
         else
         {
-//            byte[] hinhAnh = taiKhoan.getHINHANH();
-//            Bitmap bitmap = BitmapFactory.decodeByteArray(hinhAnh,0,hinhAnh.length);
-//            imageViewHinh_QLTK.setImageBitmap(bitmap);
             byte[] decodedString = Base64.decode(taiKhoan.getHINHANH(), Base64.DEFAULT);
             Bitmap imgBitMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             imageViewHinh_QLTK.setImageBitmap(imgBitMap);

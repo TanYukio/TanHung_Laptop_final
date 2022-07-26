@@ -88,9 +88,6 @@ public class ThongKe_Fragment extends Fragment {
     }
 
     private void GetData() {
-//        Cursor cursor1 = BatDau_activity.database.GetData("SELECT SUM ( SOLUONG ) FROM LAPTOP ");
-//        cursor1.moveToNext();
-//        soluongtonkho.setText(String.valueOf(cursor1.getInt(0) + " Sản phẩm "));
 
         compositeDisposable.add(api.laysllt()
                 .subscribeOn(Schedulers.io())
@@ -112,7 +109,6 @@ public class ThongKe_Fragment extends Fragment {
                             laptopArrayList.clear();
                             if (laptopModel.isSuccess()) {
 
-
                                 for (int i= 0;i<laptopModel.getResult().size();i++){
                                     laptopArrayList.add(laptopModel.getResult().get(i));
                                 }
@@ -123,22 +119,6 @@ public class ThongKe_Fragment extends Fragment {
 
                             Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
-
-//        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE SOLUONG < 50 ");
-//        laptopArrayList.clear();
-//        while (cursor.moveToNext()) {
-//            laptopArrayList.add(new LAPTOP(
-//                    cursor.getInt(0),
-//                    cursor.getBlob(1),
-//                    cursor.getString(2),
-//                    cursor.getInt(3),
-//                    cursor.getInt(4),
-//                    cursor.getString(5),
-//                    cursor.getInt(6),
-//                    cursor.getInt(7)
-//            ));
-//        }
-//        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -154,10 +134,6 @@ public class ThongKe_Fragment extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.menu_delete_item:
-                LAPTOP laptop = LaptopAdminAdapter.laptopList.get(info.position);
-//                BatDau_activity.database.DELETE_SANPHAM(
-//                        laptop.getIDLT()
-//                );
 
                 Toast.makeText(getActivity(), "Xóa thành công", Toast.LENGTH_LONG).show();
                 GetData();

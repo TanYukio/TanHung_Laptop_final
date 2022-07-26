@@ -30,15 +30,17 @@ public class DangKy_Activity extends AppCompatActivity {
     EditText edtTaikhoan,edtMatkhau,edtnhaplai_matkhau,edtsdt,edtemail;
     Button btnDangky;
     ImageView img_quaylai_dangky;
+    API api;
     CompositeDisposable compositeDisposable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dang_ky);
         anh_xa();
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
+
         btnDangky.setOnClickListener(new View.OnClickListener() {
-//            String matkhau = edtMatkhau.getText().toString().trim();
-//            String nlmatkhau = edtnhaplai_matkhau.getText().toString().trim();
             @Override
             public void onClick(View view) {
                 if (edtTaikhoan.getText().toString() == null || edtTaikhoan.getText().toString().equals("")){
@@ -69,8 +71,7 @@ public class DangKy_Activity extends AppCompatActivity {
                     String matkhau = edtMatkhau.getText().toString();
                     String sdt = edtsdt.getText().toString();
                     String email = edtemail.getText().toString();
-                    API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-                    compositeDisposable =  new CompositeDisposable();
+
                     compositeDisposable.add(api.dangKi(tentaikhoan, matkhau, sdt, email, 1,encodedImage)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -84,18 +85,8 @@ public class DangKy_Activity extends AppCompatActivity {
                                         // Đều xuất thông báo khi thành công lẫn thất bại
                                         Toast.makeText(getApplicationContext(), messageModel.getMessage(), Toast.LENGTH_LONG).show();
                                     }, throwable -> {
-                                        Log.e("Lỗi", throwable.getMessage());
                                         Toast.makeText(getApplicationContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                     }));
-
-//                    long kiemtra = BatDau_activity.database.themtaikhoan(taiKhoan);
-//                    if (kiemtra != 0){
-//                        Toast.makeText(DangKy_Activity.this, "Thêm thành công !", Toast.LENGTH_LONG).show();
-//                        Intent intent = new Intent(DangKy_Activity.this, DangNhap_Activity.class);
-//                        startActivity(intent);
-//                    } else {
-//                        Toast.makeText(DangKy_Activity.this, "Thêm thất bại !", Toast.LENGTH_LONG).show();
-//                    }
                 }
             }
         });

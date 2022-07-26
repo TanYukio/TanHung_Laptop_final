@@ -92,8 +92,6 @@ public class QLSanPham_Fragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), SuaSanPham_Activity.class);
-
-
                 intent.putExtra("id", i);
 
                 startActivity(intent);
@@ -118,8 +116,6 @@ public class QLSanPham_Fragment extends Fragment {
 
     private void GetData() {
         if (IDNSX == 0) {
-            //sql="SELECT * FROM LAPTOP";
-
             compositeDisposable.add(api.layhetSp()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -127,13 +123,11 @@ public class QLSanPham_Fragment extends Fragment {
                             laptopModel -> {
                                 laptopArrayList.clear();
                                 if (laptopModel.isSuccess()) {
-
-
                                     for (int i = 0; i < laptopModel.getResult().size(); i++) {
                                         laptopArrayList.add(laptopModel.getResult().get(i));
                                     }
-                                    Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
-
+                                } else {
+                                    Toast.makeText(getContext(), laptopModel.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                                 adapter.notifyDataSetChanged();
                             }, throwable -> {
@@ -141,43 +135,22 @@ public class QLSanPham_Fragment extends Fragment {
                             }));
 
         } else {
-            //sql =" SELECT * FROM LAPTOP WHERE IDNSX = " + IDNSX;
-
             compositeDisposable.add(api.laySpnsx(IDNSX)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             laptopModel -> {
+                                laptopArrayList.clear();
                                 if (laptopModel.isSuccess()) {
-                                    laptopArrayList.clear();
                                     for (int i = 0; i < laptopModel.getResult().size(); i++) {
                                         laptopArrayList.add(laptopModel.getResult().get(i));
                                     }
-                                    Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
-                                    adapter.notifyDataSetChanged();
                                 }
+                                adapter.notifyDataSetChanged();
                             }, throwable -> {
-//                            Log.e("Lỗi", throwable.getMessage());
                                 Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                             }));
         }
-
-//        Cursor cursor = BatDau_activity.database.GetData(sql);
-//        laptopArrayList.clear();
-//        while (cursor.moveToNext())
-//        {
-//            laptopArrayList.add(new LAPTOP(
-//                    cursor.getInt(0),
-//                    cursor.getString(1),
-//                    cursor.getString(2),
-//                    cursor.getInt(3),
-//                    cursor.getInt(4),
-//                    cursor.getString(5),
-//                    cursor.getInt(6),
-//                    cursor.getInt(7)
-//            ));
-//        }
-//        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -205,12 +178,6 @@ public class QLSanPham_Fragment extends Fragment {
                                 }, throwable -> {
                                     Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                 }));
-//                BatDau_activity.database.DELETE_SANPHAM(
-//                        laptop.getIDLT()
-//                );
-//
-//                Toast.makeText(getActivity(), "Xóa thành công", Toast.LENGTH_LONG).show();
-
                 return true;
             default:
                 return super.onContextItemSelected(item);

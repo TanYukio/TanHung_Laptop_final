@@ -36,10 +36,12 @@ public class HP_Fragment extends Fragment {
     LAPTOP_ADAPTER adapter;
     TextView tieude;
     CompositeDisposable compositeDisposable;
+    API api;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
+        compositeDisposable =  new CompositeDisposable();
     }
 
     @Override
@@ -55,8 +57,6 @@ public class HP_Fragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), Chitietsanpham_Activity.class);
-
-
                 intent.putExtra("id",i);
                 startActivity(intent);
 
@@ -69,44 +69,21 @@ public class HP_Fragment extends Fragment {
     }
 
     private void GetData() {
-        API api = RetrofitClient.getInstance(Utils.BASE_URL).create(API.class);
-        compositeDisposable =  new CompositeDisposable();
         compositeDisposable.add(api.laySpnsx(4)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         laptopModel -> {
                             if (laptopModel.isSuccess()) {
-                                Log.e("1",laptopModel.getResult().get(0).getTENLAPTOP());
-
                                 laptopArrayList.clear();
                                 for (int i= 0;i<laptopModel.getResult().size();i++){
                                     laptopArrayList.add(laptopModel.getResult().get(i));
                                 }
-//                                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
-//                                Log.e("đâ", laptopArrayList.size() + "");
                                 adapter.notifyDataSetChanged();
                             }
                         }, throwable -> {
-//                            Log.e("Lỗi", throwable.getMessage());
                             Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
-//        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM LAPTOP WHERE IDNSX = 4");
-//        laptopArrayList.clear();
-////        while (cursor.moveToNext())
-////        {
-////            laptopArrayList.add(new LAPTOP(
-////                    cursor.getInt(0),
-////                    cursor.getBlob(1),
-////                    cursor.getString(2),
-////                    cursor.getInt(3),
-////                    cursor.getInt(4),
-////                    cursor.getString(5),
-////                    cursor.getInt(6),
-////                    cursor.getInt(7)
-////            ));
-////        }
-//        adapter.notifyDataSetChanged();
     }
 
     private void anh_xa() {

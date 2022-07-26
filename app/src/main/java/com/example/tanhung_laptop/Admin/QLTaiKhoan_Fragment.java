@@ -85,7 +85,6 @@ public class QLTaiKhoan_Fragment extends Fragment {
 
     private void GetData() {
 
-        Log.e("GetData","");
         compositeDisposable.add(api.layhetTk()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -93,36 +92,14 @@ public class QLTaiKhoan_Fragment extends Fragment {
                         taiKhoanModel -> {
                             taiKhoanArrayList.clear();
                             if (taiKhoanModel.isSuccess()) {
-
-
                                 for (int i= 0;i<taiKhoanModel.getResult().size();i++){
                                     taiKhoanArrayList.add(taiKhoanModel.getResult().get(i));
                                 }
-                                Toast.makeText(getContext(), "Thành công", Toast.LENGTH_LONG).show();
-
-
                             }
                             adapter.notifyDataSetChanged();
                         }, throwable -> {
                             Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }));
-//        Cursor cursor = BatDau_activity.database.GetData("SELECT * FROM TAIKHOAN ");
-//        taiKhoanArrayList.clear();
-//        while (cursor.moveToNext())
-//        {
-//            taiKhoanArrayList.add(new TAIKHOAN(
-//                    cursor.getInt(0),
-//                    cursor.getString(1),
-//                    cursor.getString(2),
-//                    cursor.getInt(3),
-//                    cursor.getString(4),
-//                    cursor.getString(5),
-//                    cursor.getInt(6),
-//                    cursor.getString(7),
-//                    cursor.getString(8)
-//            ));
-//        }
-//        adapter.notifyDataSetChanged();
     }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -150,12 +127,6 @@ public class QLTaiKhoan_Fragment extends Fragment {
                                 }, throwable -> {
                                     Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                 }));
-//                BatDau_activity.database.DELETE_TAIKHOAN(
-//                        taiKhoan.getIDTAIKHOAN()
-//                );
-//
-//                Toast.makeText(getActivity(),"Xóa thành công",Toast.LENGTH_LONG).show();
-
                 return true;
             default:
                 return super.onContextItemSelected(item);
