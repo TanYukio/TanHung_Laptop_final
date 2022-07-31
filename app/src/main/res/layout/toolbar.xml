@@ -13,7 +13,7 @@
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#9E47BD">
+            android:background="#f10999">
             <ImageView
                 android:layout_marginRight="10dp"
                 android:id="@+id/menu"
@@ -21,15 +21,6 @@
                 android:layout_height="30dp"
                 android:layout_gravity="right"
                 android:src="@drawable/ic_baseline_menu_24"
-                app:tint="#000000">
-            </ImageView>
-
-            <ImageView
-                android:id="@+id/thongbao"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="right"
-                android:src="@drawable/ic_baseline_notifications_active_24"
                 app:tint="#000000">
             </ImageView>
 

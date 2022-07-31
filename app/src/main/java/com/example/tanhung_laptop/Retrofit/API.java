@@ -49,7 +49,7 @@ public interface API {
     Observable<DoubleModel> layidcthd();
 
     @GET("laysllt.php")
-    Observable<DoubleModel> laysllt();
+    Observable<IntegerModel> laysllt();
 
     @GET("layltduoi50.php")
     Observable<LaptopModel> layltduoi50();
@@ -150,6 +150,11 @@ public interface API {
     @FormUrlEncoded
     Observable<StringModel> layhinhanh(
             @Field("idlt") Integer idlt
+    );
+    @POST("laytentk.php")
+    @FormUrlEncoded
+    Observable<StringModel> laytentk(
+            @Field("IDTAIKHOAN") Integer IDTAIKHOAN
     );
     @POST("timkiem.php")
     @FormUrlEncoded

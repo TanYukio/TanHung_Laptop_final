@@ -95,7 +95,7 @@ public class ThongKe_Fragment extends Fragment {
                 .subscribe(
                         integerModel -> {
                             if (integerModel.isSuccess()) {
-                                soluongtonkho.setText(String.valueOf(integerModel.getResult() + " Sản phẩm "));
+                                soluongtonkho.setText(integerModel.getResult() + " Sản phẩm ");
                             }
                         }, throwable -> {
                             Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
@@ -121,27 +121,7 @@ public class ThongKe_Fragment extends Fragment {
                         }));
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.menu_content, menu);
 
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
-
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.menu_delete_item:
-
-                Toast.makeText(getActivity(), "Xóa thành công", Toast.LENGTH_LONG).show();
-                GetData();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
-    }
 
     @Override
     public void onDestroy() {

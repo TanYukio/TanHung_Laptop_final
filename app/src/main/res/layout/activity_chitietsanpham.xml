@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:orientation="horizontal"
-                android:background="#C043DC">
+                android:background="#F10999">
                 <ImageButton
                     android:id="@+id/btn_quaylai"
                     android:layout_width="30dp"
@@ -143,6 +143,10 @@
                         android:textSize="18sp"
                         android:textColor="@color/black"/>
                 </LinearLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
                 <LinearLayout
                     android:layout_marginTop="20dp"
                     android:id="@+id/layoutBinhLuan_playvideo"
@@ -160,6 +164,7 @@
                         android:hint="Nhập nội dung bình luận"
                         android:textSize="15sp"
                         />
+
                     <Button
                         android:id="@+id/btn_GuiBl"
                         android:layout_width="100dp"
@@ -170,6 +175,10 @@
                         android:textSize="15sp"
                         />
                 </LinearLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rec_Binhluan_sanpham"
                     android:background="@color/white"

@@ -14,7 +14,7 @@
             android:layout_height="50dp"
             android:padding="10dp"
             android:orientation="horizontal"
-            android:background="#FF9800"
+            android:background="#f10999"
             android:gravity="center">
 
             <ImageView

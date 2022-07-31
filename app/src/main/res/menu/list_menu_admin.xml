@@ -15,7 +15,6 @@
         android:id="@+id/nav_ql_taikhoan"
         android:title="Quản Lý Tài Khoản" />
     <item
-        android:icon="@drawable/ic_baseline_add_shopping_cart_24"
         android:id="@+id/nav_ql_hoadon"
         android:title="Thống Kê Doanh Thu" />
     <item
@@ -32,7 +31,7 @@
     </group>
     <group android:checkableBehavior="single">
         <item
-            android:icon="@drawable/ic_baseline_login_24"
+
             android:id="@+id/nav_logout"
             android:title="Đăng Xuất" />
     </group>

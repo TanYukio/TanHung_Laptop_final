@@ -15,7 +15,7 @@
             android:layout_height="50dp"
             android:padding="10dp"
             android:orientation="horizontal"
-            android:background="#FFC107"
+            android:background="#f10999"
             android:gravity="center">
             <ImageView
                 android:id="@+id/quaylai_qltk"

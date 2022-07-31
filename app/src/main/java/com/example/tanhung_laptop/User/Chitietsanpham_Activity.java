@@ -204,7 +204,7 @@ public class Chitietsanpham_Activity extends AppCompatActivity {
         String ten = laptop.getTENLAPTOP();
         name.setText(ten);
         noidung_ctsp.setText(laptop.getMOTASP());
-        price.setText(NumberFormat.getNumberInstance(Locale.US).format(laptop.getGIASP() + " VNĐ"));
+        price.setText(NumberFormat.getNumberInstance(Locale.US).format(laptop.getGIASP()) + " VND");
 
 
         byte[] decodedString = Base64.decode(laptop.getHINHANH(), Base64.DEFAULT);

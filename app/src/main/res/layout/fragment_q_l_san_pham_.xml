@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="56dp"
     android:orientation="vertical"
-    android:background="#9DDCE4"
+    android:background="#FFFFFF"
     tools:context=".Admin.QLSanPham_Fragment">
 
     <LinearLayout
@@ -19,7 +19,7 @@
             android:layout_marginLeft="20dp"
             android:layout_gravity="center"
             android:text="Quản lý sản phẩm"
-            android:textColor="#FFFFFF"
+            android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold" />
         <Spinner

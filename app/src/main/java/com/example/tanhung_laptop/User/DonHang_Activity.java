@@ -69,7 +69,6 @@ public class DonHang_Activity extends AppCompatActivity {
     }
     private void AnhXa() {
         layoutdoanhthu = findViewById(R.id.layoutdoanhthu);
-        layoutdoanhthu.setBackgroundResource(R.color.cam);
         ibtnExit_lichsu = findViewById(R.id.ibtnExit_lichsu);
         ibtnExit_lichsu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +129,7 @@ public class DonHang_Activity extends AppCompatActivity {
                         integerModel -> {
                             if (integerModel.isSuccess())
                             {
-                                tongtien_HD.setText(NumberFormat.getNumberInstance(Locale.US).format(integerModel.getResult()+ " VNĐ"));
+                                tongtien_HD.setText(NumberFormat.getNumberInstance(Locale.US).format(integerModel.getResult()) + " VNĐ");
                             }
 
                         }, throwable -> {
